@@ -1,3 +1,6 @@
+#ifndef H_SYSTM_H
+#define H_SYSTM_H
+
 /* UNIX V7 source code: see /COPYRIGHT or www.tuhs.org for details. */
 
 /*
@@ -63,6 +66,9 @@ struct filsys *getfs();
 struct file *getf();
 struct file *falloc();
 int	uchar();
+
+void printf(const char * restrict format, ...);
+
 /*
  * Instrumentation
  */
@@ -81,3 +87,6 @@ extern struct sysent {
 	char	sy_nrarg;		/* number of args in registers */
 	int	(*sy_call)();		/* handler */
 } sysent[];
+
+// RISC-V
+#endif  // H_SYSTM_H
