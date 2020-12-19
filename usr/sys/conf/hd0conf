@@ -1,8 +1,6 @@
 hd
-fd
 md
-cd
-sr
+serial
 root hd 56
 swap hd 57
 swplo 0

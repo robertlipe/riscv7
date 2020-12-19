@@ -2,12 +2,23 @@
 /* Changes: Copyright (c) 2007 Robert Nordier. All rights reserved. */
 
 #include <stdio.h>
+#include <string.h>
 
 #define CHAR	01
 #define BLOCK	02
 #define ROOT	040
 #define	SWAP	0100
 #define	PIPE	0200
+
+char *tables[] = 
+{
+	"\n// entry.S needs one stack per CPU. \
+	\n__attribute__ ((aligned (16))) char _stack0[4096 * NCPU]; \
+	\n// scratch for timer interrupt, one per CPU. \
+	\n__attribute__ ((aligned (16))) char mscratch0[32 * NCPU]; \
+	\n",
+	0
+};
 
 char	*btab[] =
 {
@@ -22,6 +33,7 @@ char	*ctab[] =
 	"mem",
 	"tty",
 	"sr",
+	"serial",
 	"hd",
 	"fd",
 	"md",
@@ -65,7 +77,14 @@ struct tab
 	"",
 	"	sropen, srclose, srread, srwrite, srioctl, nulldev, sr,",
 	"",
-	"int	sropen(), srclose(), srread(), srwrite(), srioctl();\nstruct	tty	sr[];",
+	"int	sropen(), srclose(), srread(), srwrite(), srioctl();\nstruct	tty	sr[1];",
+
+	"serial",
+	0, CHAR,
+	"",
+	"	serialopen, serialclose, serialread, serialwrite, serialioctl, nulldev, serial,",
+	"",
+	"int	serialopen(), serialclose(), serialread(), serialwrite(), serialioctl();\nstruct	tty	serial[1];",
 
 	"hd",
 	0, BLOCK+CHAR,
@@ -150,7 +169,7 @@ dev_t	swapdev	= makedev(%d, %d);\n\
 dev_t	pipedev = makedev(%d, %d);\n\
 int	nldisp = %d;\n\
 daddr_t	swplo	= %ld;\n\
-int	nswap	= %l;\n\
+int	nswap	= %ld;\n\
 "};
 
 char	strg1[] =
@@ -219,7 +238,13 @@ int	nswap = 872;
 int	pack;
 int	nldisp = 1;
 
-main()
+int main(void);
+void puke(char *s[]);
+int input(void);
+int equal(char *a, char *b);
+
+int 
+main (void)
 {
 	register struct tab *p;
 	register char *q;
@@ -232,15 +257,16 @@ main()
 	/*
 	 * declarations
 	 */
+	puke(tables);
 	puke(stre);
-	for (i=0; q=btab[i]; i++) {
+	for (i=0; (q=btab[i]); i++) {
 		for (p=table; p->name; p++)
 		if (equal(q, p->name) &&
 		   (p->key&BLOCK) && p->count && *p->codef)
 			printf("%s\n", p->codef);
 	}
 	puke(stre1);
-	for(i=0; q=btab[i]; i++) {
+	for(i=0; (q=btab[i]); i++) {
 		for(p=table; p->name; p++)
 		if(equal(q, p->name) &&
 		   (p->key&BLOCK) && p->count) {
@@ -265,14 +291,14 @@ main()
 		pipemin = rootmin;
 	}
 	puke(strf);
-	for (i=0; q=ctab[i]; i++) {
+	for (i=0; (q=ctab[i]); i++) {
 		for (p=table; p->name; p++)
 		if (equal(q, p->name) &&
 		   (p->key&CHAR) && p->count && *p->codeg)
 			printf("%s\n", p->codeg);
 	}
 	puke(strf1);
-	for(i=0; q=ctab[i]; i++) {
+	for(i=0; (q=ctab[i]); i++) {
 		for(p=table; p->name; p++)
 		if(equal(q, p->name) &&
 		   (p->key&CHAR) && p->count) {
@@ -295,26 +321,26 @@ main()
 		pipemaj, pipemin,
 		nldisp,
 		swplo, nswap);
-	printf(strg1);
+	puts(strg1);
 	if (!mpx)
 		puke(strg1a);
-	printf(strg2);
+	puts(strg2);
 	if(rootmaj < 0)
 		fprintf(stderr, "No root device given\n");
 }
 
-puke(s, a)
-char **s;
+void 
+puke (char **s)
 {
 	char *c;
 
-	while(c = *s++) {
-		printf(c, a);
-		printf("\n");
+	while((c = *s++)) {
+		printf("%s\n", c);
 	}
 }
 
-input()
+int 
+input (void)
 {
 	char line[100];
 	register struct tab *q;
@@ -325,7 +351,10 @@ input()
 	if (fgets(line, 100, stdin) == NULL)
 		return(0);
 	count = -1;
-	n = sscanf(line, "%d%s%s%ld", &count, keyw, dev, &num);
+        // RJL: The original here had
+	// n = sscanf(line, "%d%s%s%ld", &count, keyw, dev, &num);
+        // which seems impossible as the first entry is never a decimal.
+	n = sscanf(line, "%s%s%ld", keyw, dev, &num);
 	if (count == -1 && n>0) {
 		count = 1;
 		n++;
@@ -385,6 +414,7 @@ input()
 		return(1);
 	}
 	if (equal(keyw, "swap")) {
+// fprintf(stderr, "XXX swap string: %s, ", keyw);
 		if (n<4)
 			goto badl;
 		for (q=table; q->name; q++) {
@@ -417,8 +447,8 @@ badl:
 	return(1);
 }
 
-equal(a, b)
-char *a, *b;
+int 
+equal (char *a, char *b)
 {
 	return(!strcmp(a, b));
 }
