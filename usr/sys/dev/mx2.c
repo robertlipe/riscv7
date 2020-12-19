@@ -37,7 +37,6 @@ short	cmask[16]	={
 #define	FP	((struct file *)cp)
 
 
-
 char mcdebugs[NDEBUGS];
 
 /*
@@ -231,7 +230,8 @@ bad:
 		u.u_error = ENXIO;
 		return;
 	}
-	FP = getf(u.u_arg[0]);
+	//FP = getf(u.u_arg[0]);
+cp = getf(u.u_arg[0]);
 	fmp = FP->f_flag & FMP;
 	if (fmp != FMP) {
 		msread(fmp, FP->f_un.f_chan);
@@ -317,7 +317,8 @@ caddr_t	ubase, hbase;
 		u.u_error = ENXIO;
 		return;
 	}
-	FP = getf(u.u_arg[0]);
+//	FP = getf(u.u_arg[0]);
+	cp = getf(u.u_arg[0]);
 	fmp = FP->f_flag & FMP;
 	if (fmp != FMP) {
 		mswrite(fmp, FP->f_un.f_chan);
