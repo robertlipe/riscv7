@@ -31,6 +31,9 @@ static double q2	 = .16667838148816337184521798e4;
 static double q1	 = .207933497444540981287275926e4;
 static double q0	 = .89678597403663861962481162e3;
 
+#include <math.h>
+static double satan(double);
+static double xatan(double);
 
 /*
 	atan makes its argument positive and

@@ -41,6 +41,7 @@
 
 #include <math.h>
 #include <errno.h>
+static asympt(double arg);
 
 int	errno;
 static double pzero, qzero;
