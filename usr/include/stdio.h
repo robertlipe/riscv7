@@ -41,3 +41,7 @@ FILE	*freopen();
 FILE	*fdopen();
 long	ftell();
 char	*fgets();
+
+int     printf (const char *__restrict, ...);
+int     fprintf (FILE*, const char *__restrict, ...);
+int     sprintf (char*, const char *__restrict, ...);
