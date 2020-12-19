@@ -590,6 +590,23 @@ putchar(c)
 		if (++msgbufp >= &msgbuf[MSGBUFS])
 			msgbufp = msgbuf;
 	}
+#if BOOGER
 	if (!curs)
 		scputc(c);
+#else
+// This is a gross hack 
+        *(volatile int *)0x10000000 = c;
+extern void LCD_Putc(char c, short color);
+{
+static int color = 0x07E0; // GREEN
+LCD_Putc(c, color);
+}
+
+
+#if LATER
+// So is this.
+extern unsigned SEGGER_RTT_PutChar(unsigned, char);
+SEGGER_RTT_PutChar(0, c);
+#endif // LATER
+#endif
 }

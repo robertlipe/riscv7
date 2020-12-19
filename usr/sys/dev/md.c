@@ -20,6 +20,7 @@ struct buf rmdbuf;
 mdstrategy(bp)
 register struct buf *bp;
 {
+printf("MD strategy");
 	unsigned sz, x;
 
 	sz = (bp->b_bcount + BMASK) >> BSHIFT;
