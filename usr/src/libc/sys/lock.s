@@ -1,10 +1,7 @@
-// V7/x86 source code: see www.nordier.com/v7x86 for details.
-// Copyright (c) 1999 Robert Nordier.  All rights reserved.
-
-		.globl _lock, cerror
-_lock:		mov $53,eax
-                int $0x30
-                jc 1f
-                ret
-
-1:            	jmp cerror
+  .global _lock
+  .global lock
+  _lock:
+  lock:
+  li a7, 53
+  ecall
+  ret

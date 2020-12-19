@@ -1,10 +1,7 @@
-// V7/x86 source code: see www.nordier.com/v7x86 for details.
-// Copyright (c) 1999 Robert Nordier.  All rights reserved.
-
-		.globl _umask, cerror
-_umask:		mov $60,eax
-                int $0x30
-                jc 1f
-                ret
-
-1:            	jmp cerror
+  .global _umask
+  .global umask
+  _umask:
+  umask:
+  li a7, 60
+  ecall
+  ret
