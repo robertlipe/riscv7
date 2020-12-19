@@ -1,7 +1,7 @@
 /* UNIX V7 source code: see /COPYRIGHT or www.tuhs.org for details. */
 
 #include	<stdio.h>
-
+#if 0
 char *sprintf(str, fmt, args)
 char *str, *fmt;
 {
@@ -14,3 +14,4 @@ char *str, *fmt;
 	putc('\0', &_strbuf);
 	return(str);
 }
+#endif
