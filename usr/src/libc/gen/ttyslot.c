@@ -8,7 +8,7 @@
 
 
 char	*ttyname();
-char	*getttys();
+static char	*getttys(int f);
 char	*rindex();
 static	char	ttys[]	= "/etc/ttys";
 
@@ -40,7 +40,7 @@ ttyslot()
 }
 
 static char *
-getttys(f)
+getttys(int f)
 {
 	static char line[32];
 	register char *lp;

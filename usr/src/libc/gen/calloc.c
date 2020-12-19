@@ -3,7 +3,9 @@
 /*	calloc - allocate and clear memory block
 */
 #define CHARPERINT (sizeof(int)/sizeof(char))
-#define NULL 0
+#include <stddef.h>
+// Intentionall don't do this because this cfree() predates ANSI convention
+// #include <stdlib.h>
 
 char *
 calloc(num, size)

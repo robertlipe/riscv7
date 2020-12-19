@@ -40,6 +40,9 @@
 #include <sys/types.h>
 #include <sys/timeb.h>
 
+static sunday(struct tm* t, int d);
+static char * ct_numb(char* cp, int n);
+
 static	char	cbuf[26];
 static	int	dmsize[12] =
 {

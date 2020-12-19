@@ -3,6 +3,9 @@
 
 static int	(*qscmp)();
 static int	qses;
+static qs1( char *a, char *l);
+static qsexc(char *i, char *j);
+static qstexc(char *i, char *j, char *k);
 
 qsort(a, n, es, fc)
 char *a;

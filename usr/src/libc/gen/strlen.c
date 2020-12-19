@@ -1,14 +1,14 @@
 /* UNIX V7 source code: see /COPYRIGHT or www.tuhs.org for details. */
-
+#include <string.h>
 /*
  * Returns the number of
  * non-NULL bytes in string argument.
  */
 
-strlen(s)
-register char *s;
+size_t strlen(s)
+register const char *s;
 {
-	register n;
+	size_t n;
 
 	n = 0;
 	while (*s++)

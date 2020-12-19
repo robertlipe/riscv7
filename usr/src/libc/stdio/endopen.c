@@ -3,13 +3,15 @@
 #include	<stdio.h>
 #include	<errno.h>
 
+static int create(char* file, int rw);
+
 FILE *
 _endopen(file, mode, iop)
 	char *file, *mode;
-	register FILE *iop;
+	FILE *iop;
 {
 	extern int errno;
-	register int rw, f;
+	int rw, f;
 
 	if (iop == NULL)
 		return(NULL);
@@ -56,10 +58,10 @@ _endopen(file, mode, iop)
 
 static int
 create(file, rw)
-	register char *file;
+	char *file;
 	int rw;
 {
-	register int f;
+	int f;
 
 	f = creat(file, 0666);
 	if (rw && f>=0) {

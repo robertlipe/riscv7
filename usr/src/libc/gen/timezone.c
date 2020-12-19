@@ -1,5 +1,5 @@
 /* UNIX V7 source code: see /COPYRIGHT or www.tuhs.org for details. */
-
+#include <stdio.h>
 /*
  * The arguments are the number of minutes of time
  * you are westward from Greenwich and whether DST is in effect.

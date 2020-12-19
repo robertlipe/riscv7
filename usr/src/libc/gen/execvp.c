@@ -5,11 +5,13 @@
  *	execvp(name, argv)	(like execv, but does path search)
  */
 #include <errno.h>
-#define	NULL	0
+#include <string.h>
+#include <stddef.h>
 
 static	char shell[] =	"/bin/sh";
-char	*execat(), *getenv();
+char	*getenv();
 extern	errno;
+static char * execat(char* s1, char* s2, char* si);
 
 execlp(name, argv)
 char *name, *argv;

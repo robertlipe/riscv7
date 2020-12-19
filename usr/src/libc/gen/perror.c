@@ -1,5 +1,7 @@
 /* UNIX V7 source code: see /COPYRIGHT or www.tuhs.org for details. */
 
+#include <string.h>
+
 /*
  * Print the error indicated
  * in the cerror cell.

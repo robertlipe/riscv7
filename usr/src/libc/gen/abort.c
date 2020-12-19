@@ -2,6 +2,7 @@
 /* Copyright (c) 1998 Robert Nordier.  All rights reserved. */
 
 #include <signal.h>
+#include <stdlib.h>
 
 abort()
 {

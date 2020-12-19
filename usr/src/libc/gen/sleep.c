@@ -4,11 +4,11 @@
 #include <setjmp.h>
 
 static jmp_buf jmp;
+static int sleepx();
 
 sleep(n)
 unsigned n;
 {
-	int sleepx();
 	unsigned altime;
 	int (*alsig)() = SIG_DFL;
 
@@ -36,7 +36,7 @@ unsigned n;
 }
 
 static
-sleepx()
+int sleepx()
 {
 	longjmp(jmp, 1);
 }
