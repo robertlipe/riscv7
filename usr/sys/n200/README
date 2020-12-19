@@ -1,0 +1,76 @@
+This directory became kind of a dumping ground for a couple of different
+concepts.
+
+Undeveloped ideas for real-time debugging and cross-host debugging.
+SEGGER_RTT.c
+SEGGER_RTT.h
+SEGGER_RTT_Conf.h
+SEGGER_RTT_printf.c
+
+I'm not sure these actually give 1ms as much as they give a reasonable amount
+of time to spin-wait.
+delay1ms.c
+delay1ms.h
+
+
+# These are largely unmodified versions of very popular Arduino-class
+# libraries to perform disk I/O to a microSD card. There's no pretense 
+# of these being UNIXv7. The technology gap is just laughable. We can 
+# spin-wait a DMA over SPI to a flash card before a VAX disk pack could
+# step a track.
+# TODO: look up sources for credits, license terms.
+diskio.c
+diskio.h
+ff.c
+ff.h
+ffconf.h
+sdcard.c
+sdcard.h
+tf_card.c
+tf_card.h
+
+# These are poorly named. THey're not specific to GD32V; they're specific
+# to Longnan Nano board.
+# They allow direct toggling of LEDs and drawing on console. 
+## led has had a hard life.
+## lcd largely came from elsewhere. I added drawing.
+# lcd does not implement the console driver; it hooks kernel printf. We
+# could implement ANSI color console, but I'm not sure it makes sense and
+# the code is large.
+gd32v_lcd.c
+gd32v_lcd.h
+gdv32_led.c
+oledfont.h
+
+# This was an early abstraction libary. It should die.
+gd32v_pjt_include.h
+system_gd32vf103.h ?? 
+
+
+# These are the official chip support libraries for the GD32V line.
+# https://www.gigadevice.com/products/microcontrollers/gd32-development-tools/
+gd32vf103.h
+gd32vf103_gpio.c
+gd32vf103_gpio.h
+gd32vf103_rcu.c
+gd32vf103_rcu.h
+gd32vf103_spi.c
+gd32vf103_spi.h
+gd32vf103_timer.c
+gd32vf103_timer.h
+gd32vf103xb_boot.S
+
+# Nucleisys 200 is the CPU core used in GD32V.
+n200_eclic.h
+n200_func.c
+n200_func.h
+n200_timer.h
+
+# Abstractions and constants common to all RISC-V implementations, usually
+# for both 32 and 64 bit widths.
+riscv_bits.h
+riscv_const.h
+riscv_encoding.h
+
+
+-- robertlipe
