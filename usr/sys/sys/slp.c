@@ -2,6 +2,7 @@
 
 #include "../h/param.h"
 #include "../h/systm.h"
+#include "../h/types.h"
 #include "../h/dir.h"
 #include "../h/user.h"
 #include "../h/proc.h"
@@ -12,7 +13,7 @@
 #include "../h/buf.h"
 
 #define SQSIZE 0100	/* Must be power of 2 */
-#define HASH(x)	(( (int) x >> 5) & (SQSIZE-1))
+#define HASH(x)	(( (long) x >> 5) & (SQSIZE-1))
 struct proc *slpque[SQSIZE];
 
 /*
@@ -26,8 +27,8 @@ struct proc *slpque[SQSIZE];
  * premature return, and check that the reason for
  * sleeping has gone away.
  */
-sleep(chan, pri)
-caddr_t chan;
+int
+sleep (caddr_t chan, int pri)
 {
 	register struct proc *rp;
 	register s, h;
@@ -81,8 +82,8 @@ psig:
 /*
  * Wake up all processes sleeping on chan.
  */
-wakeup(chan)
-register caddr_t chan;
+int
+wakeup (register caddr_t chan)
 {
 	register struct proc *p, *q;
 	register i;
@@ -117,8 +118,8 @@ register caddr_t chan;
  * 'proc on q' diagnostic, the
  * diagnostic loop can be removed.
  */
-setrq(p)
-struct proc *p;
+int
+setrq (struct proc *p)
 {
 	register struct proc *q;
 	register s;
@@ -139,8 +140,8 @@ out:
  * Set the process running;
  * arrange for it to be swapped in if necessary.
  */
-setrun(p)
-register struct proc *p;
+int
+setrun (register struct proc *p)
 {
 	register caddr_t w;
 
@@ -170,8 +171,8 @@ register struct proc *p;
  * is set if the priority is better
  * than the currently running process.
  */
-setpri(pp)
-register struct proc *pp;
+int
+setpri (register struct proc *pp)
 {
 	register p;
 
@@ -201,7 +202,8 @@ register struct proc *pp;
  * selected swapped process.  It is awakened when the
  * core situation changes and in any case once per second.
  */
-sched()
+int
+sched (void)
 {
 	register struct proc *rp, *p;
 	register outage, inage;
@@ -212,6 +214,13 @@ sched()
 	 * of users ready, select one out longest
 	 */
 
+	KASSERT(lbolt >= 0, "timer expected to run, but isn't");
+#if 0
+printf("Locking up in sched");
+while(1) {
+   LCD_ShowNum(0,0,lbolt,10,0xffff/*white*/);
+}
+#endif
 loop:
 	spl6();
 	outage = -20000;
@@ -291,8 +300,8 @@ loop:
  * Allocate data and possible text separately.
  * It would be better to do largest first.
  */
-swapin(p)
-register struct proc *p;
+int
+swapin (register struct proc *p)
 {
 	register struct text *xp;
 	register int a;
@@ -328,7 +337,8 @@ register struct proc *p;
  * the Q of running processes and
  * call the scheduler.
  */
-qswtch()
+int
+qswtch (void)
 {
 
 	setrq(u.u_procp);
@@ -346,11 +356,11 @@ qswtch()
  * will return in at most 1HZ time.
  * i.e. its not worth putting an spl() in.
  */
-swtch()
+int
+swtch (void)
 {
 	register n;
 	register struct proc *p, *q, *pp, *pq;
-
 	/*
 	 * If not the idle process, resume the idle process.
 	 */
@@ -425,7 +435,8 @@ loop:
  * sys fork.
  * It returns 1 in the new process, 0 in the old.
  */
-newproc()
+int
+newproc (void)
 {
 	int a1, a2;
 	struct proc *p, *up;
@@ -471,7 +482,7 @@ retry:
 	rpp->p_ppid = rip->p_pid;
 	rpp->p_time = 0;
 	rpp->p_cpu = 0;
-
+printf("New PID: %d\n", mpid);
 	/*
 	 * make duplicate entries
 	 * where needed
@@ -503,16 +514,20 @@ retry:
 	 * here's where it will resume.
 	 */
 	if (save(u.u_ssav)) {
+printf("newproc: Child process!\n");
 		sureg();
 		return(1);
 	}
 	a2 = malloc(coremap, n);
+printf("newproc allocated %x proc size %d\n", a2, n);
+
 	/*
 	 * If there is not enough core for the
 	 * new process, swap out the current process to generate the
 	 * copy.
 	 */
 	if(a2 == NULL) {
+  panic("*** Warning: swapping out process is bad ***\n");
 		rip->p_stat = SIDL;
 		rpp->p_addr = a1;
 		xswap(rpp, 0, 0);
@@ -522,8 +537,10 @@ retry:
 		 * There is core, so just copy.
 		 */
 		rpp->p_addr = a2;
-		while(n--)
+		printf("Src %p: Dest %p", a1, a2);
+		while(n--) {
 			copyseg(a1++, a2++);
+		}
 	}
 	u.u_procp = rip;
 	setrq(rpp);
@@ -544,7 +561,8 @@ retry:
  * After the expansion, the caller will take care of copying
  * the user's stack towards or away from the data area.
  */
-expand(newsize)
+int
+expand (int newsize)
 {
 	register i, n;
 	register struct proc *p;
