@@ -9,6 +9,7 @@
 #include "../h/user.h"
 #include "../h/proc.h"
 #include "../h/reg.h"
+#include "memlayout.h"
 
 #define	SCHMAG	8/10
 
@@ -25,15 +26,15 @@
  *	alarm clock signals
  *	jab the scheduler
  */
-
-clock(tr)
-struct trap tr;
+struct trap dummytrap;
+int
+clock (struct trap tr)
 {
 	register struct callo *p1, *p2;
 	register struct proc *pp;
 	int a;
 	extern caddr_t waitloc;
-
+tr = dummytrap;
 	/*
 	 * callouts
 	 * if none, just continue
@@ -140,9 +141,8 @@ out:
  * The panic is there because there is nothing
  * intelligent to be done if an entry won't fit.
  */
-timeout(fun, arg, tim)
-int (*fun)();
-caddr_t arg;
+int
+timeout (int (*fun)(void), caddr_t arg, int tim)
 {
 	register struct callo *p1, *p2;
 	register int t;
