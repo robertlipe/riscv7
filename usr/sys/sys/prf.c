@@ -7,6 +7,8 @@
 #include "../h/buf.h"
 #include "../h/conf.h"
 
+#include <stdarg.h>
+
 /*
  * In case console is off,
  * panicstr contains argument to last
@@ -14,6 +16,7 @@
  */
 
 char	*panicstr;
+const char hexdigits[] = "0123456789abcdef";
 
 /*
  * Scaled down version of C Library printf.
@@ -26,60 +29,113 @@ char	*panicstr;
  * Printf should not be used for chit-chat.
  */
 /* VARARGS 1 */
-printf(fmt, x1)
-register char *fmt;
-unsigned x1;
+// RJL - this should be picked through for va_list compliance
+
+void
+// printf (register char *fmt, unsigned x1)
+printf (const char* restrict fmt, ...)
 {
 	register c;
-	register unsigned int *adx;
 	char *s;
 	int d;
-
-	adx = &x1;
+        va_list list;
+        va_start(list, fmt);
+#if 1 // BOOGER
 loop:
 	while((c = *fmt++) != '%') {
-		if(c == '\0')
+//	while((c = va_arg(list, int)) != '%') {
+		if(c == '\0') {
 			return;
+		}
 		putchar(c);
 	}
+	// c must be at the % mark, so skip over that
+//	c = va_arg(list,  int);
+//	c++;
 	c = *fmt++;
-	if (c == 'd') {
-		d = *adx;
+#else
+	c = va_arg(list,  int);
+	while ((c = *fmt++)) {
+#endif
+	switch (c) {
+	case 'd': {
+    unsigned int d = va_arg(list, unsigned int);
 		if (d < 0) {
 			putchar('-');
 			d = -d;
 		}
-		printn((long)d, 10);
-	} else if (c == 'u' || c == 'o' || c == 'x')
-		printn((long)*adx, c=='o'? 8: (c=='x'? 16:10));
-	else if(c == 's') {
-		s = (char *)*adx;
-		while(c = *s++)
-			putchar(c);
-	} else if (c == 'D') {
-		printn(*(long *)adx, 10);
-		adx += (sizeof(long) / sizeof(int)) - 1;
+		printn(d, 10);
 	}
-	adx++;
+	break;
+	case 'p': {
+    long adp = va_arg(list, int);
+		printptr(adp);
+	}
+	break;
+case 'u': {
+    long adx = va_arg(list, int);
+		printn(adx, 16);
+  }
+	break;
+case 'o': {
+    long adx = va_arg(list, int);
+		printn(adx, 8);
+  }
+	break;
+case 'x': {
+    long adx = va_arg(list, int);
+		printn(adx, 16);
+	}
+	break;
+	case 's': {
+		char *s = va_arg(list, char*);
+		if (s == 0) {
+			s = "(null)";
+		}
+		while((c = *s++)) {
+			putchar(c);
+		}
+	}
+	}
+//#if BOOGER
+	// TODO: rethink
 	goto loop;
+//}
+//#else
+//	}
 }
+//#endif
 
 /*
  * Print an unsigned integer in base b.
  */
-printn(n, b)
-unsigned long n;		/* XXX */
+int
+printn (
+    unsigned long n,		/* XXX */
+    int b
+)
 {
 	register unsigned long a;	/* XXX */
 
-	if (n<0) {	/* shouldn't happen */
+	if (n < 0) {	/* shouldn't happen */
 		putchar('-');
 		n = -n;
 	}
-	if(a = n/b)
+	if ((a = n/b)) {
 		printn(a, b);
-	putchar("0123456789ABCDEF"[(int)(n%b)]);
+  	}
+	putchar(hexdigits[(int)(n%b)]);
 }
+
+// better later
+int
+printptr (long n) {
+  putchar('0');
+  putchar('x');
+  printn(n, 16);
+}
+
+
 
 /*
  * Panic is called on unresolvable
@@ -87,11 +143,11 @@ unsigned long n;		/* XXX */
  * It syncs, prints "panic: mesg" and
  * then loops.
  */
-panic(s)
-char *s;
+int
+panic (char *s)
 {
 	panicstr = s;
-	update();
+//	update();
 	printf("panic: %s\n", s);
 	for(;;)
 		idle();
@@ -103,9 +159,8 @@ char *s;
  * x and y are the major and minor parts of
  * the device argument.
  */
-prdev(str, dev)
-char *str;
-dev_t dev;
+int
+prdev (char *str, int dev)
 {
 
 	printf("%s on dev %u/%u\n", str, major(dev), minor(dev));
@@ -118,8 +173,8 @@ dev_t dev;
  * and an octal word (usually some error
  * status register) passed as argument.
  */
-deverror(bp, o1, o2)
-register struct buf *bp;
+int
+deverror (register struct buf *bp, int o1, int o2)
 {
 
 	prdev("err", bp->b_dev);
