@@ -1,10 +1,15 @@
 /* UNIX V7 source code: see /COPYRIGHT or www.tuhs.org for details. */
 
 /*	find	COMPILE:	cc -o find -s -O -i find.c -lS	*/
+
+#include <math.h>
 #include <stdio.h>
-#include <sys/types.h>
+#include <stdlib.h>
+#include <string.h>
 #include <sys/dir.h>
 #include <sys/stat.h>
+#include <sys/types.h>
+
 #define A_DAY	86400L /* a day full of seconds */
 #define EQ(x, y)	(strcmp(x, y)==0)
 
@@ -285,7 +290,7 @@ register struct anode *p;
 	return( !((*p->L->F)(p->L)));
 }
 glob(p)
-register struct { int f; char *pat; } *p; 
+register struct { int f; char *pat; } *p;
 {
 	return(gmatch(Fname, p->pat));
 }
@@ -295,22 +300,22 @@ print()
 	return(1);
 }
 mtime(p)
-register struct { int f, t, s; } *p; 
+register struct { int f, t, s; } *p;
 {
 	return(scomp((int)((Now - Statb.st_mtime) / A_DAY), p->t, p->s));
 }
 atime(p)
-register struct { int f, t, s; } *p; 
+register struct { int f, t, s; } *p;
 {
 	return(scomp((int)((Now - Statb.st_atime) / A_DAY), p->t, p->s));
 }
 ctime(p)
-register struct { int f, t, s; } *p; 
+register struct { int f, t, s; } *p;
 {
 	return(scomp((int)((Now - Statb.st_ctime) / A_DAY), p->t, p->s));
 }
 user(p)
-register struct { int f, u, s; } *p; 
+register struct { int f, u, s; } *p;
 {
 	return(scomp(Statb.st_uid, p->u, p->s));
 }
@@ -320,22 +325,22 @@ register struct { int f, u, s; } *p;
 	return(scomp((int)Statb.st_ino, p->u, p->s));
 }
 group(p)
-register struct { int f, u; } *p; 
+register struct { int f, u; } *p;
 {
 	return(p->u == Statb.st_gid);
 }
 links(p)
-register struct { int f, link, s; } *p; 
+register struct { int f, link, s; } *p;
 {
 	return(scomp(Statb.st_nlink, p->link, p->s));
 }
 size(p)
-register struct { int f, sz, s; } *p; 
+register struct { int f, sz, s; } *p;
 {
 	return(scomp((int)((Statb.st_size+511)>>9), p->sz, p->s));
 }
 perm(p)
-register struct { int f, per, s; } *p; 
+register struct { int f, per, s; } *p;
 {
 	register i;
 	i = (p->s=='-') ? p->per : 07777; /* '-' means only arg bits */
@@ -564,7 +569,7 @@ char *name, *fname;
 				close(dir);
 				dir = 0;
 			}
-		} else 
+		} else
 			if(read(dir, (char *)dentry, dsize)<0) {
 				pr("find: cannot read "), pr(name), pr("\n");
 				rv = 0;

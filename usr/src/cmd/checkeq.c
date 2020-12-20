@@ -1,6 +1,8 @@
 /* UNIX V7 source code: see /COPYRIGHT or www.tuhs.org for details. */
 
 #include <stdio.h>
+#include <stdlib.h>
+
 FILE	*fin;
 int	delim	= 0;
 /* today's version assumes no delimiters;

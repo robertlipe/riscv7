@@ -5,6 +5,7 @@
  *  change mode of files
  */
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 
@@ -59,7 +60,7 @@ unsigned nm;
 {
 	register o, m, b;
 
-	m = abs();
+	m = absolute();
 	if (!*ms)
 		return(m);
 	do {
@@ -87,7 +88,7 @@ unsigned nm;
 	return(nm);
 }
 
-abs()
+absolute()
 {
 	register c, i;
 

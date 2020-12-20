@@ -1,6 +1,7 @@
 /* UNIX V7 source code: see /COPYRIGHT or www.tuhs.org for details. */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <ctype.h>
 #include <sys/param.h>
 #include <sys/filsys.h>
@@ -980,7 +981,7 @@ char *dev;
 	imax = ((ino_t)superblk.s_isize - (SUPERB+1)) * INOPB;
 	fmin = (daddr_t)superblk.s_isize;	/* first data blk num */
 	fmax = superblk.s_fsize;		/* first invalid blk num */
-	if(fmin >= fmax || 
+	if(fmin >= fmax ||
 		(imax/INOPB) != ((ino_t)superblk.s_isize-(SUPERB+1))) {
 		error("Size check: fsize %ld isize %d\n",
 			superblk.s_fsize,superblk.s_isize);

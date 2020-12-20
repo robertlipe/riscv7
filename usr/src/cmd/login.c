@@ -10,6 +10,7 @@
 #include <signal.h>
 #include <pwd.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/stat.h>
 #define SCPYN(a, b)	strncpy(a, b, sizeof(a))
 

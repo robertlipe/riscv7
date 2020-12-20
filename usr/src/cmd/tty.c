@@ -4,7 +4,9 @@
  * Type tty name
  */
 
-char	*ttyname();
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 main(argc, argv)
 char **argv;

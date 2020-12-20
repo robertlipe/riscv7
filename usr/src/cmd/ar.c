@@ -1,10 +1,12 @@
 /* UNIX V7 source code: see /COPYRIGHT or www.tuhs.org for details. */
 
-#include <stdio.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <ar.h>
 #include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+
 struct	stat	stbuf;
 struct	ar_hdr	arbuf;
 
@@ -680,14 +682,6 @@ int	m9[] = { 2, STXT, 't', XOTH, 'x', '-' };
 
 int	*m[] = { m1, m2, m3, m4, m5, m6, m7, m8, m9};
 
-pmode()
-{
-	register int **mp;
-
-	for (mp = &m[0]; mp < &m[9];)
-		select(*mp++);
-}
-
 select(pairp)
 int *pairp;
 {
@@ -698,6 +692,14 @@ int *pairp;
 	while (--n>=0 && (arbuf.ar_mode&*ap++)==0)
 		ap++;
 	putchar(*ap);
+}
+
+pmode()
+{
+  register int **mp;
+
+  for (mp = &m[0]; mp < &m[9];)
+    select(*mp++);
 }
 
 wrerr()

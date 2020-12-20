@@ -1,6 +1,8 @@
 /* UNIX V7 source code: see /COPYRIGHT or www.tuhs.org for details. */
 
 #include <stdio.h>
+#include <stdlib.h>
+
 int	slevel[10];
 int	clevel	= 0;
 int	spflg[20][10];

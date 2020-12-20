@@ -10,12 +10,14 @@
 #define	NDIR	(BSIZE/sizeof(struct direct))
 
 #include <stdio.h>
-#include <sys/param.h>
-#include <sys/inode.h>
-#include <sys/ino.h>
+#include <stdlib.h>
+#include <string.h>
 #include <sys/dir.h>
-#include <sys/filsys.h>
 #include <sys/fblk.h>
+#include <sys/filsys.h>
+#include <sys/ino.h>
+#include <sys/inode.h>
+#include <sys/param.h>
 
 struct	filsys	sblock;
 struct	dinode	itab[INOPB*NI];

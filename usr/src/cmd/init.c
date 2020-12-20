@@ -1,13 +1,18 @@
 /* UNIX V7 source code: see /COPYRIGHT or www.tuhs.org for details. */
 
+#include <setjmp.h>
 #include <signal.h>
+#include <stdlib.h>
 #include <sys/types.h>
 #include <utmp.h>
-#include <setjmp.h>
 
 #define	TABSIZ	100
 #define	ALL	p = &itab[0]; p < &itab[TABSIZ]; p++
 #define	EVER	;;
+#if CRUTCH
+int (*signal())() {}
+int fork() {puts("Not forking");}
+#endif
 
 char	shell[]	= "/bin/sh";
 char	getty[]	 = "/etc/getty";
@@ -37,11 +42,16 @@ int	fi;
 char	tty[20];
 jmp_buf	sjbuf;
 
+int reset();
+
 main()
 {
-	int reset();
 
+#if defined CRUTCH
+	puts("Hacked up init.\n"); 
+#else
 	setjmp(sjbuf);
+#endif
 	signal(SIGHUP, reset);
 	for(EVER) {
 		shutdown();
@@ -300,5 +310,7 @@ register struct tab *p;
 
 reset()
 {
+#if !defined CRUTCH
 	longjmp(sjbuf, 1);
+#endif
 }

@@ -6,6 +6,7 @@
 
 #include <stdio.h>
 #include <sgtty.h>
+#include <stdlib.h>
 
 struct
 {

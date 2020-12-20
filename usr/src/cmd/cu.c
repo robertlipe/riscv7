@@ -1,6 +1,7 @@
 /* UNIX V7 source code: see /COPYRIGHT or www.tuhs.org for details. */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <signal.h>
 #include <sgtty.h>
 /*
@@ -44,8 +45,8 @@ char	*connmsg[] = {
 
 rdc(ds) {
 
-	ds=read(ds,&c,1); 
-	c&= 0177; 
+	ds=read(ds,&c,1);
+	c&= 0177;
 	return (ds);
 }
 
@@ -53,7 +54,7 @@ int intr;
 
 sig2()
 {
-	signal(SIGINT, SIG_IGN); 
+	signal(SIGINT, SIG_IGN);
 	intr = 1;
 }
 
@@ -68,13 +69,13 @@ xsleep(n)
 
 xalarm(n)
 {
-	set14=n; 
+	set14=n;
 	alarm(n);
 }
 
 sig14()
 {
-	signal(SIGALRM, sig14); 
+	signal(SIGALRM, sig14);
 	if (set14) alarm(1);
 }
 
@@ -185,25 +186,25 @@ char *dev, *acu, *telno;
 	extern errno;
 	char *p, *q, b[30];
 	int er, fk, dn, dh, t;
-	er=0; 
+	er=0;
 	fk=(-1);
 	if ((dn=open(acu,1))<0) {
-		er=(errno == 6? 1:5); 
+		er=(errno == 6? 1:5);
 		goto X;
 	}
 	if ((fk=fork()) == (-1)) {
-		er=4; 
+		er=4;
 		goto X;
 	}
 	if (fk == 0) {
-		open(dev,2); 
+		open(dev,2);
 		for (;;) pause();
 	}
 	xsleep(2);
 	/*
 	 *	copy phone #, assure EON
 	 */
-	p=b; 
+	p=b;
 	q=telno;
 	while (*p++=(*q++))
 		;
@@ -217,7 +218,7 @@ char *dev, *acu, *telno;
 	t=write(dn,b,t);
 	xalarm(0);
 	if (t<0) {
-		er=2; 
+		er=2;
 		goto X;
 	}
 	/* close(dn) */
@@ -225,7 +226,7 @@ char *dev, *acu, *telno;
 	dh = open(dev,2);
 	xalarm(0);
 	if (dh<0) {
-		er=(errno == 4? 3:6); 
+		er=(errno == 4? 3:6);
 		goto X;
 	}
 	ioctl(TIOCGETP, ln, &stbuf);
@@ -234,7 +235,7 @@ char *dev, *acu, *telno;
 	ioctl(TIOCSETP, dh, &stbuf);
 	ioctl(TIOCHPCL, dh, (struct sgttyb *)NULL);
 	xalarm(0);
-X: 
+X:
 	if (er) close(dn);
 	if (fk!=(-1)) {
 		kill(fk, SIGKILL);
@@ -277,13 +278,13 @@ wr()
 			}
 			*p++=c;
 			if (c == terase) {
-				p=p-2; 
+				p=p-2;
 				if (p<b) p=b;
 			}
 			if (c == tkill || c == 0177 || c == '\r' || c == '\n') p=b;
 		}
 		return;
-A: 
+A:
 		if (!dout) echo("");
 		*p=0;
 		switch (b[1]) {
@@ -316,7 +317,7 @@ A:
 		case '<':
 			if (b[2] == 0) break;
 			if ((ds=open(b+2,0))<0) {
-				prf("Can't divert %s",b+1); 
+				prf("Can't divert %s",b+1);
 				break;
 			}
 			intr=x=0;
@@ -324,7 +325,7 @@ A:
 			if (!nhup) signal(SIGINT, sig2);
 			while (!intr && rdc(ds) == 1) {
 				if (wrc(ln) == 0) {
-					x=1; 
+					x=1;
 					break;
 				}
 			}
@@ -457,11 +458,11 @@ rd()
 		if (!slnt) wrc(1);
 		*p++=c;
 		if (c!='\n') continue;
-		q=p; 
+		q=p;
 		p=b;
 		if (b[0]!='~' || b[1]!='>') {
 			if (*(q-2) == '\r') {
-				q--; 
+				q--;
 				*(q-1)=(*q);
 			}
 			if (ds>=0) write(ds,b,q-b);
@@ -478,11 +479,11 @@ rd()
 		q=b+2;
 		if (*q == '>') q++;
 		if (*q == ':') {
-			slnt=1; 
+			slnt=1;
 			q++;
 		}
 		if (*q == 0) {
-			ds=(-1); 
+			ds=(-1);
 			continue;
 		}
 		if (b[2]!='>' || (ds=open(q,1))<0) ds=creat(q,0644);

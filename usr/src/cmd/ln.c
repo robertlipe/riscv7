@@ -6,8 +6,9 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
-#include "stdio.h"
-char	*rindex();
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
 main(argc, argv)
 char **argv;

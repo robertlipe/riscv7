@@ -4,11 +4,12 @@
  * chgrp gid file ...
  */
 
-#include <stdio.h>
 #include <ctype.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <grp.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 struct	group	*gr,*getgrnam();
 struct	stat	stbuf;

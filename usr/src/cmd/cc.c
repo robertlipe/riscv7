@@ -1,9 +1,9 @@
 /* UNIX V7 source code: see /COPYRIGHT or www.tuhs.org for details. */
 /* Changes: Copyright (c) 2006 Robert Nordier. All rights reserved. */
 
-#
-# include <stdio.h>
 # include <signal.h>
+# include <stdio.h>
+# include <stdlib.h>
 
 /* cc command */
 
@@ -37,7 +37,7 @@ char	*copy();
 char	*setsuf();
 
 main(argc, argv)
-char *argv[]; 
+char *argv[];
 {
 	char *t;
 	char *savetsp;
@@ -91,7 +91,7 @@ char *argv[];
 				--pv;
 			}
 			break;
-		} 
+		}
 		else {
 passa:
 			t = argv[i];
@@ -146,7 +146,7 @@ passa:
 		if (getsuf(clist[i])=='s') {
 			assource = clist[i];
 			goto assemble;
-		} 
+		}
 		else
 			assource = tmp3;
 		if (pflag)
@@ -201,7 +201,7 @@ passa:
 			cflag++;
 			eflag++;
 			continue;
-		} 
+		}
 		if (sflag)
 			continue;
 assemble:
@@ -306,7 +306,7 @@ char *as;
 }
 
 callsys(f, v)
-char f[], *v[]; 
+char f[], *v[];
 {
 	int i, t, status;
 
@@ -341,7 +341,6 @@ char *
 copy(as)
 char *as;
 {
-	char *malloc();
 	register char *otsp, *s;
 
 	otsp = tsp;

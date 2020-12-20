@@ -3,11 +3,15 @@
 /*
  * Run programs submitted by at.
  */
+
 #include <stdio.h>
-#include <sys/types.h>
+#include <string.h>
+#include <stdlib.h>
 #include <sys/dir.h>
-#include <time.h>
 #include <sys/stat.h>
+#include <sys/types.h>
+#include <time.h>
+#include <unistd.h>
 
 # define DIR "/usr/spool/at"
 # define PDIR	"past"

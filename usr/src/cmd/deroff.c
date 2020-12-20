@@ -4,6 +4,8 @@ char *xxxvers = "\nDeroff Version 1.02    24 July 1978\n";
 
 
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
 /* Deroff command -- strip troff, eqn, and Tbl sequences from
 a file.  Has one flag argument, -w, to cause output one word per line
@@ -17,7 +19,7 @@ All input is through the C macro; the most recently read character is in c.
 
 #define C ( (c=getc(infile)) == EOF ? eof() : ((c==ldelim)&&(filesp==files) ? skeqn() : c) )
 #define C1 ( (c=getc(infile)) == EOF ? eof() :  c)
-#define SKIP while(C != '\n') 
+#define SKIP while(C != '\n')
 
 #define YES 1
 #define NO 0
@@ -50,10 +52,6 @@ FILE *files[15];
 FILE **filesp;
 FILE *infile;
 
-char *calloc();
-
-
-
 main(ac, av)
 int ac;
 char **av;
@@ -66,7 +64,7 @@ FILE *opn();
 argc = ac - 1;
 argv = av + 1;
 
-while(argc>0 && argv[0][0]=='-' && argv[0][1]!='\0') 
+while(argc>0 && argv[0][0]=='-' && argv[0][1]!='\0')
 	{
 	for(p=argv[0]+1; *p; ++p) switch(*p)
 		{

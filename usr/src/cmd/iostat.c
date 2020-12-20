@@ -1,6 +1,9 @@
 /* UNIX V7 source code: see /COPYRIGHT or www.tuhs.org for details. */
 /* Changes: Copyright (c) 2007 Robert Nordier. All rights reserved. */
 
+#include <stdio.h>
+#include <stdlib.h>
+
 int	bflg;
 int	dflg;
 int	tflg;

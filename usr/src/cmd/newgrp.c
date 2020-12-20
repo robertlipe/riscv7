@@ -1,6 +1,7 @@
 /* UNIX V7 source code: see /COPYRIGHT or www.tuhs.org for details. */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <grp.h>
 #include <pwd.h>
 
@@ -25,7 +26,7 @@ char	**argv;
 		printf("You do not exist!\n");
 		done();
 	}
-	for(i=0;grp->gr_mem[i];i++) 
+	for(i=0;grp->gr_mem[i];i++)
 		if(strcmp(grp->gr_mem[i], pwd->pw_name) == 0)
 			break;
 	if(grp->gr_mem[i] == 0 && strcmp(grp->gr_name,"other")) {

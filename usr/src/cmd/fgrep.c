@@ -9,8 +9,9 @@
  *		2 - some error
  */
 
-#include "stdio.h"
-# include "ctype.h"
+#include <stdio.h>
+#include <ctype.h>
+#include <stdlib.h>
 
 #define	MAXSIZ 6000
 #define QSIZE 400

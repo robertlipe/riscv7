@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <signal.h>
+#include <stdlib.h>
 
 #define	BIG	32767
 #define	LCASE	01

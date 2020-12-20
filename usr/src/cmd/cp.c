@@ -5,7 +5,9 @@
  */
 
 #define	BSIZE	512
+#include <fcntl.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 struct	stat	stbuf1, stbuf2;
@@ -16,12 +18,12 @@ char *argv[];
 {
 	register i, r;
 
-	if (argc < 3) 
+	if (argc < 3)
 		goto usage;
 	if (argc > 3) {
 		if (stat(argv[argc-1], &stbuf2) < 0)
 			goto usage;
-		if ((stbuf2.st_mode&S_IFMT) != S_IFDIR) 
+		if ((stbuf2.st_mode&S_IFMT) != S_IFDIR)
 			goto usage;
 	}
 	r = 0;

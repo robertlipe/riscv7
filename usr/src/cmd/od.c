@@ -5,6 +5,7 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 
 unsigned short	word[8];
 unsigned short	lastword[8];

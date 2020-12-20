@@ -1,6 +1,7 @@
 /* UNIX V7 source code: see /COPYRIGHT or www.tuhs.org for details. */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/param.h>
 #include <sys/stat.h>
 #include <sys/dir.h>
@@ -125,7 +126,7 @@ char *np, *fname;
 				close(dir);
 				dir = 0;
 			}
-		} else 
+		} else
 			if(read(dir, (char *)dentry, dsize)<0) {
 				fprintf(stderr, "--cannot read < %s >\n",
 					np);

@@ -1,11 +1,13 @@
 /* UNIX V7 source code: see /COPYRIGHT or www.tuhs.org for details. */
 
-#include <sys/types.h>
-#include <stdio.h>
 #include <ctype.h>
 #include <signal.h>
-#include <time.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <sys/stat.h>
+#include <sys/types.h>
+#include <time.h>
+#include <unistd.h>
 
 #define	LISTS	512
 
@@ -18,8 +20,6 @@ char	crontab[]	= "/usr/lib/crontab";
 time_t	itime;
 struct	tm *loct;
 struct	tm *localtime();
-char	*malloc();
-char	*realloc();
 int	flag;
 char	*list;
 unsigned listsize;

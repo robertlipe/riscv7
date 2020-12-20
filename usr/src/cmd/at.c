@@ -6,10 +6,11 @@
  * at time wday 'week'
  *
  */
-#include <stdio.h>
 #include <ctype.h>
-#include <time.h>
 #include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
 #define HOUR 100
 #define HALFDAY	(12*HOUR)
@@ -27,7 +28,7 @@ char *days[] = {
 };
 
 struct monstr {
-	char *mname; 
+	char *mname;
 	int mlen;
 } months[] = {
 	{ "january", 31 },
@@ -118,7 +119,7 @@ char **argv;
 }
 
 makeutime(pp)
-char *pp; 
+char *pp;
 {
 	register val;
 	register char *p;

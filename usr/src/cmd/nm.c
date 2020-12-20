@@ -14,6 +14,8 @@
 #include	<a.out.h>
 #include	<stdio.h>
 #include	<ctype.h>
+#include <stdlib.h>
+
 #define	MAGIC	exp.a_magic
 #define	BADMAG	MAGIC!=A_MAGIC1 && MAGIC!=A_MAGIC2  \
 		&& MAGIC!=A_MAGIC3 && MAGIC!=A_MAGIC4

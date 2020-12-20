@@ -6,6 +6,7 @@
  */
 
 #include <signal.h>
+#include <stdlib.h>
 
 char *fillst[] = {
 	"/bin",
@@ -30,7 +31,7 @@ main()
 		pause();
 }
 
-dosync()
+void dosync()
 {
 	sync();
 	signal(SIGALRM, dosync);

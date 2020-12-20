@@ -6,6 +6,7 @@
 
    used by calendar command
 */
+#include <stdio.h>
 #include <time.h>
 
 #define DAY (3600*24L)
@@ -24,7 +25,6 @@ char *month[] = {
 	"[Nn]ov",
 	"[Dd]ec"
 };
-struct tm *localtime();
 
 tprint(t)
 long t;

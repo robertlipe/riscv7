@@ -6,6 +6,8 @@
 
 #include <sys/types.h>
 #include <sys/ino.h>
+#include <stdio.h>
+#include <stdlib.h>
 #define ISIZE	(sizeof(struct dinode))
 #define	BSIZE	512
 #define	NI	(BSIZE/ISIZE)

@@ -1,6 +1,7 @@
 /* UNIX V7 source code: see /COPYRIGHT or www.tuhs.org for details. */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <ctype.h>
 #include <signal.h>
 #include <sys/types.h>
@@ -640,7 +641,7 @@ char *i, *j;
 		}
 		code = fp->code;
 		ignore = fp->ignore;
-loop: 
+loop:
 		while(ignore[*pa])
 			pa++;
 		while(ignore[*pb])
@@ -711,7 +712,7 @@ char *pp;
 		if(*p != '\n')
 			p++;
 		else goto ret;
-	} 
+	}
 ret:
 	return(p);
 }

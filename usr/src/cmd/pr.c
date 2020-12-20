@@ -6,6 +6,7 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <signal.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -138,7 +139,6 @@ print(fp, argp)
 char *fp;
 char **argp;
 {
-	extern char *sprintf();
 	struct stat sbuf;
 	register sncol;
 	register char *sheader;

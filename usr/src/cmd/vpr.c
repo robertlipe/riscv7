@@ -5,6 +5,7 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 
 #define	LINELN	132
 #define	EJLINE	63

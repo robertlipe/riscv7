@@ -1,6 +1,6 @@
 /* UNIX V7 source code: see /COPYRIGHT or www.tuhs.org for details. */
 
-/* tail command 
+/* tail command
  *
  *	tail where [file]
  *	where is +_n[type]
@@ -14,6 +14,7 @@
 #include	<sys/types.h>
 #include	<sys/stat.h>
 #include	<errno.h>
+#include <stdlib.h>
 #define LBIN 4097
 struct	stat	statb;
 char bin[LBIN];

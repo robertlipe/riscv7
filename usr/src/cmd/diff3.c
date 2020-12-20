@@ -1,11 +1,11 @@
 /* UNIX V7 source code: see /COPYRIGHT or www.tuhs.org for details. */
 
 #include <stdio.h>
-#
+#include <stdlib.h>
 
 /* diff3 - 3-way differential file comparison*/
 
-/* diff3 [-e] d13 d23 f1 f2 f3 
+/* diff3 [-e] d13 d23 f1 f2 f3
  *
  * d13 = diff report on f1 vs f3
  * d23 = diff report on f2 vs f3
@@ -377,7 +377,7 @@ struct range *r1, *r2;
 repos(nchar)
 {
 	register i;
-	for(i=0;i<2;i++) 
+	for(i=0;i<2;i++)
 		fseek(fp[i], (long)-nchar, 1);
 }
 

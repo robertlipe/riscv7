@@ -4,10 +4,13 @@
  * determine type of file
  */
 
+#include <ctype.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <sys/param.h>
 #include <sys/stat.h>
-#include <stdio.h>
-#include <ctype.h>
+
 int in;
 int i  = 0;
 char buf[512];
@@ -127,7 +130,7 @@ exec:
 		j = i;
 		while(buf[i++] != '\n'){
 			if(i - j > 255){
-				printf("data\n"); 
+				printf("data\n");
 				goto out;
 			}
 			if(i >= in)goto notc;
@@ -145,8 +148,8 @@ check:
 		if(buf[i] <= 0)
 			goto notas;
 		if(buf[i] == ';'){
-			i++; 
-			goto check; 
+			i++;
+			goto check;
 		}
 		if(buf[i++] == '\n')
 			if(nl++ > 6)goto notc;
@@ -180,7 +183,7 @@ notfort:
 	if(buf[i] == '.'){
 		i++;
 		if(lookup(as) == 1){
-			printf("assembler program text"); 
+			printf("assembler program text");
 			goto outa;
 		}
 		else if(buf[j] == '\n' && isalpha(buf[j+2])){
@@ -197,8 +200,8 @@ notfort:
 		if(buf[i] == '.'){
 			i++;
 			if(lookup(as) == 1){
-				printf("assembler program text"); 
-				goto outa; 
+				printf("assembler program text");
+				goto outa;
 			}
 			else if(buf[j] == '\n' && isalpha(buf[j+2])){
 				printf("roff, nroff, or eqn input text");
@@ -214,8 +217,8 @@ notas:
 			printf("troff output\n");
 			goto out;
 		}
-		printf("data\n"); 
-		goto out; 
+		printf("data\n");
+		goto out;
 	}
 	if (mbuf.st_mode&((S_IEXEC)|(S_IEXEC>>3)|(S_IEXEC>>6)))
 		printf("commands text");
@@ -298,12 +301,12 @@ char *bp;
 			ct[bp[j]|040]++;
 		switch (bp[j])
 		{
-		case '.': 
-		case ',': 
-		case ')': 
+		case '.':
+		case ',':
+		case ')':
 		case '%':
-		case ';': 
-		case ':': 
+		case ';':
+		case ':':
 		case '?':
 			punct++;
 			if ( j < n-1 &&

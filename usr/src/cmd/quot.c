@@ -10,6 +10,7 @@ char	*dargv[] = {
 };
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <ctype.h>
 #include <pwd.h>
 #include <sys/param.h>
@@ -42,7 +43,7 @@ unsigned	ino;
 unsigned	nfiles;
 
 struct	passwd	*getpwent();
-char	*malloc();
+//char	*malloc();
 char	*copy();
 
 main(argc, argv)

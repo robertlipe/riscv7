@@ -8,6 +8,7 @@
 #include <sys/stat.h>
 #include <sys/dir.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #define	NFILES	1024
 FILE	*pwdf, *dirf;
@@ -156,7 +157,7 @@ char *argv[];
 				printf("total %D\n", tblocks);
 			for (ep1=slastp; ep1<lastp; ep1++)
 				pentry(*ep1);
-		} else 
+		} else
 			pentry(ep);
 	}
 	exit(0);
@@ -330,7 +331,7 @@ struct lbuf *
 gstat(file, argfl)
 char *file;
 {
-	extern char *malloc();
+//	extern char *malloc();
 	struct stat statb;
 	register struct lbuf *rep;
 	static int nomocore;

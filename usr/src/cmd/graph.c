@@ -1,8 +1,11 @@
 /* UNIX V7 source code: see /COPYRIGHT or www.tuhs.org for details. */
 
-#include <stdio.h>
 #include <ctype.h>
 #include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #define	INF	1.e+37
 #define	F	.25
 
@@ -16,7 +19,7 @@ struct xy {
 	float	xquant;	/*quantum*/
 	float	xoff;		/*screen offset fraction*/
 	float	xsize;		/*screen fraction*/
-	int	xbot,xtop;	/*screen coords of border*/	
+	int	xbot,xtop;	/*screen coords of border*/
 	float	xmult;	/*scaling constant*/
 } xd,yd;
 struct val {
@@ -56,8 +59,6 @@ char *modes[] = {
 	"longdashed"
 };
 int mode = 1;
-char *realloc();
-char *malloc();
 
 double ident(x)
 double x;
@@ -370,12 +371,12 @@ register struct xy *p;
 		if(ub > 0) {
 			ub = 2*ub;
 			lb = 0;
-		} 
+		}
 		else
 			if(lb < 0) {
 				lb = 2*lb;
 				ub = 0;
-			} 
+			}
 			else {
 				ub = 1;
 				lb = -1;
@@ -655,7 +656,7 @@ symbol(ix,iy,k)
 		if(mode==0)
 			point(ix,iy);
 		return(1);
-	} 
+	}
 	else {
 		move(ix,iy);
 		label(k>=0?labs+k:plotsymb);

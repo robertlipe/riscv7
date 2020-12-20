@@ -17,7 +17,7 @@
 *	on the hash (called value_____). In particular, this
 *	collects the equivalence classes in file1 together.
 *	Subroutine equiv____  replaces the value of each line in
-*	file0 by the index of the first element of its 
+*	file0 by the index of the first element of its
 *	matching equivalence in (the reordered) file1.
 *	To save space equiv_____ squeezes file1 into a single
 *	array member______ in which the equivalence classes
@@ -32,15 +32,15 @@
 *	of "k-candidates". At step i a k-candidate is a matched
 *	pair of lines x,y (x in file0 y in file1) such that
 *	there is a common subsequence of lenght k
-*	between the first i lines of file0 and the first y 
+*	between the first i lines of file0 and the first y
 *	lines of file1, but there is no such subsequence for
 *	any smaller y. x is the earliest possible mate to y
 *	that occurs in such a subsequence.
 *
 *	Whenever any of the members of the equivalence class of
-*	lines in file1 matable to a line in file0 has serial number 
-*	less than the y of some k-candidate, that k-candidate 
-*	with the smallest such y is replaced. The new 
+*	lines in file1 matable to a line in file0 has serial number
+*	less than the y of some k-candidate, that k-candidate
+*	with the smallest such y is replaced. The new
 *	k-candidate is chained (via pred____) to the current
 *	k-1 candidate so that the actual subsequence can
 *	be recovered. When a member has serial number greater
@@ -62,13 +62,15 @@
 *	The core requirements for problems larger than somewhat
 *	are (in words) 2*length(file0) + length(file1) +
 *	3*(number of k-candidates installed),  typically about
-*	6n words for files of length n. 
+*	6n words for files of length n.
 */
-#include <stdio.h>
+#include <stdlib.h>
 #include <ctype.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
 #define	prints(s)	fputs(s,stdout)
 
 #define HALFLONG 16
@@ -116,7 +118,7 @@ done()
 
 char *talloc(n)
 {
-	extern char *malloc();
+//	extern char *malloc();
 	register char *p;
 	p = malloc((unsigned)n);
 	if(p!=NULL)
@@ -128,7 +130,7 @@ char *ralloc(p,n)	/*compacting reallocation */
 char *p;
 {
 	register char *q;
-	char *realloc();
+//	char *realloc();
 	free(p);
 	free(dummy);
 	dummy = malloc(1);
@@ -598,7 +600,7 @@ char *s;
 
 /* hashing has the effect of
  * arranging line in 7-bit bytes and then
- * summing 1-s complement in 16-bit hunks 
+ * summing 1-s complement in 16-bit hunks
 */
 
 readhash(f)

@@ -1,5 +1,8 @@
 /* UNIX V7 source code: see /COPYRIGHT or www.tuhs.org for details. */
 
+#include <stdio.h>
+#include <stdlib.h>
+
 char	dayw[] = {
 	" S  M Tu  W Th  F  S"
 };
@@ -8,6 +11,7 @@ char	*smon[]= {
 	"May", "June", "July", "August",
 	"September", "October", "November", "December",
 };
+
 char	string[432];
 main(argc, argv)
 char *argv[];

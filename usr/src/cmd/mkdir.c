@@ -4,8 +4,10 @@
 ** make directory
 */
 
-#include	<signal.h>
-#include	<stdio.h>
+#include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 int	Errors = 0;
 char	*strcat();

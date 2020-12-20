@@ -1,6 +1,7 @@
 /* UNIX V7 source code: see /COPYRIGHT or www.tuhs.org for details. */
 
 #include <stdio.h>
+#include <stdlib.h>
 
 #define	NDIM	10
 #define	NTAB	601
@@ -26,7 +27,7 @@ struct prefix
 {
 	double	factor;
 	char	*pname;
-} prefix[] = 
+} prefix[] =
 {
 	1e-18,	"atto",
 	1e-15,	"femto",

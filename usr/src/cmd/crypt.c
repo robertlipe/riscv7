@@ -5,8 +5,11 @@
  *	but considerably trivialized.
  */
 
-#define ECHO 010
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define ECHO 010
 #define ROTORSZ 256
 #define MASK 0377
 char	t1[ROTORSZ];

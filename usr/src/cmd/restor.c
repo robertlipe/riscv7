@@ -8,6 +8,7 @@
 
 #ifndef STANDALONE
 #include <stdio.h>
+#include <stdlib.h>
 #include <signal.h>
 #endif
 #include <sys/param.h>

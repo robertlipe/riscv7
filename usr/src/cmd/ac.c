@@ -4,12 +4,13 @@
  * acct [ -w wtmp ] [ -d ] [ -p ] [ people ]
  */
 
-#include <stdio.h>
 #include <ctype.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/timeb.h>
+#include <sys/types.h>
 #include <time.h>
 #include <utmp.h>
-#include <sys/types.h>
-#include <sys/timeb.h>
 
 #define	TSIZE	33
 #define	USIZE	200
@@ -34,7 +35,7 @@ long	day	= 86400L;
 int	pcount;
 char	**pptr;
 
-main(argc, argv) 
+main(argc, argv)
 char **argv;
 {
 	int c, fl;

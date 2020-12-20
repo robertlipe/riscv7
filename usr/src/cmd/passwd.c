@@ -5,16 +5,18 @@
  * this program should be suid with owner
  * with an owner with write permission on /etc/passwd
  */
-#include <stdio.h>
-#include <signal.h>
 #include <pwd.h>
+#include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 char	passwd[] = "/etc/passwd";
 char	temp[]	 = "/etc/ptmp";
 struct	passwd *pwd;
 struct	passwd *getpwent();
-int	endpwent();
-char	*strcpy();
+//int	endpwent();
+//char	*strcpy();
 char	*crypt();
 char	*getpass();
 char	*getlogin();

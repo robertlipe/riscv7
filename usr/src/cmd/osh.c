@@ -1,9 +1,18 @@
 /* UNIX V7 source code: see /COPYRIGHT or www.tuhs.org for details. */
-
+// The "old shell" which seems to be 6th editing UNIX
+// perhaps relevant: https://www.gsp.com/cgi-bin/man.cgi?section=1&topic=OSH
 /*
  */
 
 #include <setjmp.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+#undef putc
+#undef getc
+#define putc osh_putc
+#define gutc osh_gutc
+
 #define	INTR	2
 #define	QUIT	3
 #define LINSIZ 1000

@@ -7,7 +7,9 @@
  *	output is ordered list of items consistent with
  *	the partial ordering specified by the graph
 */
-#include "stdio.h"
+
+#include <stdio.h>
+#include <stdlib.h>
 
 /*	the nodelist always has an empty element at the end to
  *	make it easy to grow in natural order
@@ -31,7 +33,6 @@ struct predlist {
 struct nodelist *index();
 struct nodelist *findloop();
 struct nodelist *mark();
-char *malloc();
 char *empty = "";
 
 /*	the first for loop reads in the graph,
@@ -58,7 +59,7 @@ char **argv;
 			error("odd data",empty);
 		i = index(precedes);
 		j = index(follows);
-		if(i==j||present(i,j)) 
+		if(i==j||present(i,j))
 			continue;
 		t = (struct predlist *)malloc(sizeof(struct predlist));
 		t->nextpred = j->inedges;

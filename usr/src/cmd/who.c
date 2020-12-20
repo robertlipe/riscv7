@@ -5,6 +5,7 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <utmp.h>
 #include <pwd.h>
 struct utmp utmp;

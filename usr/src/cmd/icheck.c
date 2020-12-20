@@ -8,6 +8,7 @@
 
 #ifndef STANDALONE
 #include <stdio.h>
+#include <stdlib.h>
 #endif
 #include <sys/param.h>
 #include <sys/inode.h>

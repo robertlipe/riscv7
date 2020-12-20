@@ -5,9 +5,13 @@
  *	[ expression ]
  */
 
+#include <math.h>
 #include <stdio.h>
-#include <sys/types.h>
+#include <stdlib.h>
+#include <string.h>
 #include <sys/stat.h>
+#include <sys/types.h>
+
 #define EQ(a,b)	((tmp=a)==0?0:(strcmp(tmp,b)==0))
 
 #define DIR 1
@@ -28,7 +32,7 @@ char *argv[];
 	}
 	argv[ac] = 0;
 	if (ac<=1) exit(1);
-	exit(exp()?0:1);
+	exit(expr()?0:1);
 }
 
 char *nxtarg(mt) {
@@ -43,11 +47,11 @@ char *nxtarg(mt) {
 	return(av[ap++]);
 }
 
-exp() {
+expr() {
 	int p1;
 
 	p1 = e1();
-	if (EQ(nxtarg(1), "-o")) return(p1 | exp());
+	if (EQ(nxtarg(1), "-o")) return(p1 | expr());
 	ap--;
 	return(p1);
 }
@@ -76,7 +80,7 @@ e3() {
 
 	a=nxtarg(0);
 	if(EQ(a, "(")) {
-		p1 = exp();
+		p1 = expr();
 		if(!EQ(nxtarg(0), ")")) synbad(") expected","");
 		return(p1);
 	}

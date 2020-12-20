@@ -7,6 +7,9 @@
 #include <signal.h>
 #include <sgtty.h>
 #include <setjmp.h>
+#include <stdlib.h>
+#include <stdio.h>
+
 #define	NULL	0
 #define	FNSIZE	64
 #define	LBSIZE	512
@@ -405,7 +408,7 @@ address()
 		case ' ':
 		case '\t':
 			continue;
-	
+
 		case '+':
 			minus++;
 			if (a1==0)
@@ -418,7 +421,7 @@ address()
 			if (a1==0)
 				a1 = dot;
 			continue;
-	
+
 		case '?':
 		case '/':
 			compile(c);
@@ -439,11 +442,11 @@ address()
 					error(Q);
 			}
 			break;
-	
+
 		case '$':
 			a1 = dol;
 			break;
-	
+
 		case '.':
 			a1 = dot;
 			break;
@@ -455,7 +458,7 @@ address()
 				if (names[c-'a'] == (*a1 & ~01))
 					break;
 			break;
-	
+
 		default:
 			peekc = c;
 			if (a1==0)
@@ -897,7 +900,7 @@ getblock(atl, iof)
 	register bno, off;
 	register char *p1, *p2;
 	register int n;
-	
+
 	bno = (atl>>8)&0377;
 	off = (atl<<1)&0774;
 	if (bno >= 255) {

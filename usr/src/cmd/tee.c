@@ -7,7 +7,10 @@
 #include <signal.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <stdlib.h>
+#include <stdio.h>
 #include <errno.h>
+
 int openf[20] = { 1 };
 int n = 1;
 int t = 0;
@@ -88,10 +91,11 @@ stash(p)
 		for(k=0;k<n;k++)
 			write(openf[k], out+i, d<p-i?d:p-i);
 }
-
+#if 0
 puts(s)
 char *s;
 {
 	while(*s)
 		write(2,s++,1);
 }
+#endif

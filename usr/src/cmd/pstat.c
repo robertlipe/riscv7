@@ -9,6 +9,8 @@
 #include <sys/param.h>
 #include <sys/conf.h>
 #include <sys/tty.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 #define kaddr(x)  ((unsigned)(x) & 0xffffff)
 

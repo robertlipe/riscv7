@@ -3,6 +3,7 @@
 /* wc line and word count */
 
 #include <stdio.h>
+#include <stdlib.h>
 
 main(argc, argv)
 char **argv;

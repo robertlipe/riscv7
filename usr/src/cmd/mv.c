@@ -5,6 +5,7 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/dir.h>
@@ -19,7 +20,6 @@
 #define ROOTINO 2
 
 char	*pname();
-char	*sprintf();
 char	*dname();
 struct	stat s1, s2;
 

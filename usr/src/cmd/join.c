@@ -2,7 +2,8 @@
 
 /*	join F1 F2 on stuff */
 
-#include	<stdio.h>
+#include <stdio.h>
+#include <stdlib.h>
 #define F1 0
 #define F2 1
 #define	NFLD	20	/* max field per line */

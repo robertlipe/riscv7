@@ -6,6 +6,7 @@
 #define NCACHE	3
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/param.h>
 #include <sys/inode.h>
 #include <sys/ino.h>

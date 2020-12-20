@@ -4,6 +4,7 @@
  * Print horizontally as possible, thus saving paper
  */
 #include <stdio.h>
+#include <stdlib.h>
 int tab[8] = {8,7,6,5,4,3,2,1};
 int next;	/*next output position on line*/
 int slen;	/*length at start of line*/

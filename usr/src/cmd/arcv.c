@@ -4,8 +4,10 @@
  * Convert old to new archive format
 */
 
-#include <signal.h>
 #include <ar.h>
+#include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #define	omag	0177555
 

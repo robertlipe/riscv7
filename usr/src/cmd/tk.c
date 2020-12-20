@@ -6,6 +6,7 @@
 
 #include <stdio.h>
 #include <signal.h>
+#include <stdlib.h>
 
 #define MAXY 3071
 #define LINE 47

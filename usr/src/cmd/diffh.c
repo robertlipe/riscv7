@@ -1,6 +1,7 @@
 /* UNIX V7 source code: see /COPYRIGHT or www.tuhs.org for details. */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <ctype.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -23,7 +24,7 @@ char *getl(f,n)
 long n;
 {
 	register char *t;
-	char *malloc();
+//	char *malloc();
 	register delta, nt;
 again:
 	delta = n - lineno[f];

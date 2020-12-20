@@ -1,6 +1,8 @@
 /* UNIX V7 source code: see /COPYRIGHT or www.tuhs.org for details. */
 
-# include <stdio.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 # define PL 256
 # define ESC '\033'
@@ -209,7 +211,7 @@ outc (c)
 
 store (lno)
 {
-	char *malloc();
+//	char *malloc();
 
 	lno %= PL;
 	if (page[lno] != 0)

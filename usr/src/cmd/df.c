@@ -2,6 +2,7 @@
 /* Changes: Copyright (c) 1999 Robert Nordier. All rights reserved. */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/param.h>
 #include <sys/filsys.h>
 #include <sys/fblk.h>

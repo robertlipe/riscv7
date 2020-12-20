@@ -8,6 +8,7 @@
 #define	NDIR	(BSIZE/sizeof(struct direct))
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/param.h>
 #include <sys/inode.h>
 #include <sys/ino.h>
@@ -30,7 +31,7 @@ unsigned	nfiles;
 int	nerror;
 daddr_t	bmap();
 long	atol();
-char	*malloc();
+//char	*malloc();
 
 main(argc, argv)
 char *argv[];

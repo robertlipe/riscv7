@@ -1,6 +1,7 @@
 /* UNIX V7 source code: see /COPYRIGHT or www.tuhs.org for details. */
 
 #include <stdio.h>
+#include <stdlib.h>
 
 #define NP 1000
 #define INF 1.e37
@@ -23,7 +24,7 @@ If the points are numbered 0,1,2,...,n+1 then y" satisfies
 (R W Hamming, Numerical Methods for Engineers and Scientists,
 2nd Ed, p349ff)
 	h9i8y"9i-1988+2(h9i8+h9i+18)y"9i8+h9i+18y"9i+18
-	
+
 	= 6[(y9i+18-y9i8)/h9i+18-(y9i8-y9i-18)/h9i8]   i=1,2,...,n
 
 where y"908 = y"9n+18 = 0
@@ -173,7 +174,7 @@ spline(){
 		if(i==1) a += konst*hi;
 		if(i==n-2) a += konst*hi1;
 		diag[i] = d = i==1? a:
-		    a - hi*hi/d; 
+		    a - hi*hi/d;
 		}
 	D2yi = D2yn1 = 0;
 	for(i=n-!periodic;--i>=0;){	/* back substitute */
@@ -192,7 +193,7 @@ spline(){
 				if(i==1) a += konst*hi;
 				if(i==n-2) a += konst*hi1;
 				d = diag[i-1];
-				s = -s*d/hi; 
+				s = -s*d/hi;
 			}}
 		else D2yi = D2yn1;
 		if(!periodic) {
@@ -271,7 +272,7 @@ getlim(p)
 
 main(argc,argv)
 	char *argv[];{
-	extern char *malloc();
+//	extern char *malloc();
 	int i;
 	x.lbf = x.ubf = y.lbf = y.ubf = 0;
 	x.lb = INF;
@@ -330,6 +331,6 @@ numb(np,argcp,argvp)
 	if(!('0'<=c&&c<='9' || c=='-' || c== '.' )) return(0);
 	*np = atof((*argvp)[1]);
 	(*argcp)--;
-	(*argvp)++; 
+	(*argvp)++;
 	return(1); }
 

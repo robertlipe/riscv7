@@ -6,6 +6,8 @@
  * date -u ... : date in GMT
  */
 #include <time.h>
+#include <stdlib.h>
+#include <stdio.h>
 #include <sys/types.h>
 #include <sys/timeb.h>
 #include <utmp.h>
