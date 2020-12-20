@@ -30,9 +30,7 @@
  *	"cannot happen"
  */
 struct inode *
-iget(dev, ino)
-dev_t dev;
-ino_t ino;
+iget (int dev, int ino)
 {
 	register struct inode *ip;
 	register struct mount *mp;
@@ -92,9 +90,8 @@ loop:
 	return(ip);
 }
 
-iexpand(ip, dp)
-register struct inode *ip;
-register struct dinode *dp;
+int 
+iexpand (register struct inode *ip, register struct dinode *dp)
 {
 	register char *p1;
 	char *p2;
@@ -122,8 +119,8 @@ register struct dinode *dp;
  * write the inode out and if necessary,
  * truncate and deallocate the file.
  */
-iput(ip)
-register struct inode *ip;
+int 
+iput (register struct inode *ip)
 {
 
 	if(ip->i_count == 1) {
@@ -149,9 +146,8 @@ register struct inode *ip;
  * If any are on, update the inode
  * with the current time.
  */
-iupdat(ip, ta, tm)
-register struct inode *ip;
-time_t *ta, *tm;
+int 
+iupdat (register struct inode *ip, time_t *ta, time_t *tm)
 {
 	register struct buf *bp;
 	struct dinode *dp;
@@ -204,8 +200,8 @@ time_t *ta, *tm;
  * a contiguous free list much longer
  * than FIFO.
  */
-itrunc(ip)
-register struct inode *ip;
+int 
+itrunc (register struct inode *ip)
 {
 	register i;
 	dev_t dev;
@@ -242,9 +238,8 @@ register struct inode *ip;
 	ip->i_flag |= ICHG|IUPD;
 }
 
-tloop(dev, bn, f1, f2)
-dev_t dev;
-daddr_t bn;
+int 
+tloop (int dev, daddr_t bn, int f1, int f2)
 {
 	register i;
 	register struct buf *bp;
@@ -280,7 +275,7 @@ daddr_t bn;
  * Make a new file.
  */
 struct inode *
-maknode(mode)
+maknode (int mode)
 {
 	register struct inode *ip;
 
@@ -305,8 +300,8 @@ maknode(mode)
  * parameters left as side effects
  * to a call to namei.
  */
-wdir(ip)
-struct inode *ip;
+int 
+wdir (struct inode *ip)
 {
 
 	if (u.u_pdir->i_nlink <= 0) {

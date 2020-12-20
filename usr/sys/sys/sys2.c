@@ -11,7 +11,8 @@
 /*
  * read system call
  */
-read()
+int 
+read (void)
 {
 	rdwr(FREAD);
 }
@@ -19,7 +20,8 @@ read()
 /*
  * write system call
  */
-write()
+int 
+write (void)
 {
 	rdwr(FWRITE);
 }
@@ -29,8 +31,8 @@ write()
  * check permissions, set base, count, and offset,
  * and switch out to readi, writei, or pipe code.
  */
-rdwr(mode)
-register mode;
+int 
+rdwr (register mode)
 {
 	register struct file *fp;
 	register struct inode *ip;
@@ -79,7 +81,8 @@ register mode;
 /*
  * open system call
  */
-open()
+int 
+open (void)
 {
 	register struct inode *ip;
 	register struct a {
@@ -97,7 +100,8 @@ open()
 /*
  * creat system call
  */
-creat()
+int 
+creat (void)
 {
 	register struct inode *ip;
 	register struct a {
@@ -123,9 +127,8 @@ creat()
  * Check permissions, allocate an open file structure,
  * and call the device open routine if any.
  */
-open1(ip, mode, trf)
-register struct inode *ip;
-register mode;
+int 
+open1 (register struct inode *ip, register mode, int trf)
 {
 	register struct file *fp;
 	int i;
@@ -162,7 +165,8 @@ out:
 /*
  * close system call
  */
-close()
+int 
+close (void)
 {
 	register struct file *fp;
 	register struct a {
@@ -180,7 +184,8 @@ close()
 /*
  * seek system call
  */
-seek()
+int 
+seek (void)
 {
 	register struct file *fp;
 	register struct a {
@@ -208,7 +213,8 @@ seek()
 /*
  * link system call
  */
-link()
+int 
+link (void)
 {
 	register struct inode *ip, *xp;
 	register struct a {
@@ -258,7 +264,8 @@ out:
 /*
  * mknod system call
  */
-mknod()
+int 
+mknod (void)
 {
 	register struct inode *ip;
 	register struct a {
@@ -289,7 +296,8 @@ out:
 /*
  * access system call
  */
-saccess()
+int 
+saccess (void)
 {
 	register svuid, svgid;
 	register struct inode *ip;

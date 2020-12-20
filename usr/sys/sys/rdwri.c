@@ -19,8 +19,8 @@
  *	u_count		number of bytes to read
  *	u_segflg	read to kernel/user/user I
  */
-readi(ip)
-register struct inode *ip;
+int 
+readi (register struct inode *ip)
 {
 	struct buf *bp;
 	dev_t dev;
@@ -83,8 +83,8 @@ register struct inode *ip;
  *	u_count		number of bytes to write
  *	u_segflg	write to kernel/user/user I
  */
-writei(ip)
-register struct inode *ip;
+int 
+writei (register struct inode *ip)
 {
 	struct buf *bp;
 	dev_t dev;
@@ -136,8 +136,8 @@ register struct inode *ip;
  * Return the logical maximum
  * of the 2 arguments.
  */
-max(a, b)
-unsigned a, b;
+int 
+max (unsigned a, unsigned b)
 {
 
 	if(a > b)
@@ -149,8 +149,8 @@ unsigned a, b;
  * Return the logical minimum
  * of the 2 arguments.
  */
-min(a, b)
-unsigned a, b;
+int 
+min (unsigned a, unsigned b)
 {
 
 	if(a < b)
@@ -173,9 +173,8 @@ unsigned a, b;
  * If not, its done byte-by-byte with
  * cpass and passc.
  */
-iomove(cp, n, flag)
-register caddr_t cp;
-register n;
+int 
+iomove (register caddr_t cp, register n, int flag)
 {
 	register t;
 

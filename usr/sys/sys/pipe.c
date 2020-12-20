@@ -24,7 +24,8 @@
  * Allocate 2 file structures.
  * Put it all together with flags.
  */
-pipe()
+int 
+pipe (void)
 {
 	register struct inode *ip;
 	register struct file *rf, *wf;
@@ -60,8 +61,8 @@ pipe()
 /*
  * Read call directed to a pipe.
  */
-readp(fp)
-register struct file *fp;
+int 
+readp (register struct file *fp)
 {
 	register struct inode *ip;
 
@@ -115,8 +116,8 @@ loop:
 /*
  * Write call directed to a pipe.
  */
-writep(fp)
-register struct file *fp;
+int 
+writep (register struct file *fp)
 {
 	register c;
 	register struct inode *ip;
@@ -188,8 +189,8 @@ loop:
  * If its already locked,
  * set the WANT bit and sleep.
  */
-plock(ip)
-register struct inode *ip;
+int 
+plock (register struct inode *ip)
 {
 
 	while(ip->i_flag&ILOCK) {
@@ -206,8 +207,8 @@ register struct inode *ip;
  * This routine is also used
  * to unlock inodes in general.
  */
-prele(ip)
-register struct inode *ip;
+int 
+prele (register struct inode *ip)
 {
 
 	ip->i_flag &= ~ILOCK;

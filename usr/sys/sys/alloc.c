@@ -25,8 +25,7 @@ typedef	struct fblk *FBLKP;
  * the free list is exhausted.
  */
 struct buf *
-alloc(dev)
-dev_t dev;
+alloc (int dev)
 {
 	daddr_t bno;
 	register struct filsys *fp;
@@ -77,9 +76,8 @@ nospace:
  * back on the free list of the
  * specified device.
  */
-free(dev, bno)
-dev_t dev;
-daddr_t bno;
+int 
+free (int dev, daddr_t bno)
 {
 	register struct filsys *fp;
 	register struct buf *bp;
@@ -119,10 +117,8 @@ daddr_t bno;
  *
  * bad block on dev x/y -- not in range
  */
-badblock(fp, bn, dev)
-register struct filsys *fp;
-daddr_t bn;
-dev_t dev;
+int 
+badblock (register struct filsys *fp, daddr_t bn, int dev)
 {
 
 	if (bn < fp->s_isize || bn >= fp->s_fsize) {
@@ -144,8 +140,7 @@ dev_t dev;
  * up NICINOD more.
  */
 struct inode *
-ialloc(dev)
-dev_t dev;
+ialloc (int dev)
 {
 	register struct filsys *fp;
 	register struct buf *bp;
@@ -222,9 +217,8 @@ loop:
  * to NICINOD I nodes in the super
  * block and throws away any more.
  */
-ifree(dev, ino)
-dev_t dev;
-ino_t ino;
+int 
+ifree (int dev, int ino)
 {
 	register struct filsys *fp;
 
@@ -256,8 +250,7 @@ ino_t ino;
  *	this "cannot happen"
  */
 struct filsys *
-getfs(dev)
-dev_t dev;
+getfs (int dev)
 {
 	register struct mount *mp;
 	register struct filsys *fp;
@@ -285,7 +278,8 @@ dev_t dev;
  * the mount table to initiate modified
  * super blocks.
  */
-update()
+int 
+update (void)
 {
 	register struct inode *ip;
 	register struct mount *mp;

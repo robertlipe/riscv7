@@ -13,7 +13,8 @@
  * Perform process accounting functions.
  */
 
-sysacct()
+void 
+sysacct (void)
 {
 	register struct inode *ip;
 	register struct a {
@@ -50,7 +51,8 @@ sysacct()
 /*
  * On exit, write a record on the accounting file.
  */
-acct()
+void 
+acct (void)
 {
 	register i;
 	register struct inode *ip;
@@ -87,8 +89,9 @@ acct()
  * Produce a pseudo-floating point representation
  * with 3 bits base-8 exponent, 13 bits fraction.
  */
-compress(t)
-register time_t t;
+
+int 
+compress (register time_t t)
 {
 	register exp = 0, round = 0;
 
@@ -112,7 +115,8 @@ register time_t t;
  * as possible. swapping may still
  * occur if core grows.
  */
-syslock()
+void 
+syslock (void)
 {
 	register struct proc *p;
 	register struct a {

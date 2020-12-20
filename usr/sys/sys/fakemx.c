@@ -12,28 +12,28 @@
 #include "../h/inode.h"
 #include "../h/mx.h"
 
-sdata(cp)
-struct chan *cp;
+int 
+sdata (struct chan *cp)
 {
 }
 
-mcttstart(tp)
-struct tty *tp;
+int 
+mcttstart (struct tty *tp)
 {
 }
 
-mpxchan()
+int 
+mpxchan (void)
 {
 	u.u_error = EINVAL;
 }
 
-mcstart(p, q)
-struct chan *p;
-caddr_t q;
+int 
+mcstart (struct chan *p, caddr_t q)
 {
 }
 
-scontrol(chan, s, c)
-struct chan *chan;
+int 
+scontrol (struct chan *chan, int s, int c)
 {
 }

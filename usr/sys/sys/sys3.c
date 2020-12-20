@@ -17,7 +17,8 @@
 /*
  * the fstat system call.
  */
-fstat()
+int 
+fstat (void)
 {
 	register struct file *fp;
 	register struct a {
@@ -35,7 +36,8 @@ fstat()
 /*
  * the stat system call.
  */
-stat()
+int 
+stat (void)
 {
 	register struct inode *ip;
 	register struct a {
@@ -55,10 +57,8 @@ stat()
  * The basic routine for fstat and stat:
  * get the inode and pass appropriate parts back.
  */
-stat1(ip, ub, pipeadj)
-register struct inode *ip;
-struct stat *ub;
-off_t pipeadj;
+int 
+stat1 (register struct inode *ip, struct stat *ub, off_t pipeadj)
 {
 	register struct dinode *dp;
 	register struct buf *bp;
@@ -93,7 +93,8 @@ off_t pipeadj;
 /*
  * the dup system call.
  */
-dup()
+int 
+dup (void)
 {
 	register struct file *fp;
 	register struct a {
@@ -130,7 +131,8 @@ dup()
 /*
  * the mount system call.
  */
-smount()
+int 
+smount (void)
 {
 	dev_t dev;
 	register struct inode *ip;
@@ -196,13 +198,14 @@ out1:
 /*
  * the umount system call.
  */
-sumount()
+int 
+sumount (void)
 {
 	dev_t dev;
 	register struct inode *ip;
 	register struct mount *mp;
 	struct buf *bp;
-	register struct a {
+	struct a {
 		char	*fspec;
 	};
 
@@ -238,8 +241,8 @@ found:
  * Check that the user's argument is a reasonable
  * thing on which to mount, and return the device number if so.
  */
-dev_t
-getmdev()
+dev_t 
+getmdev (void)
 {
 	dev_t dev;
 	register struct inode *ip;

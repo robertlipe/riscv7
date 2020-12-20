@@ -17,10 +17,8 @@
  * block number of the next block of the file in rablock
  * for use in read-ahead.
  */
-daddr_t
-bmap(ip, bn, rwflg)
-register struct inode *ip;
-daddr_t bn;
+daddr_t 
+bmap (register struct inode *ip, daddr_t bn, int rwflg)
 {
 	register i;
 	struct buf *bp, *nbp;
@@ -128,8 +126,8 @@ daddr_t bn;
  * on the last character of the user's read.
  * u_base is in the user address space unless u_segflg is set.
  */
-passc(c)
-register c;
+int 
+passc (register c)
 {
 
 	if(u.u_segflg)
@@ -152,7 +150,8 @@ register c;
  * when u_count is exhausted.  u_base is in the user's
  * address space unless u_segflg is set.
  */
-cpass()
+int 
+cpass (void)
 {
 	register c;
 
@@ -175,7 +174,8 @@ cpass()
  * Routine which sets a user error; placed in
  * illegal entries in the bdevsw and cdevsw tables.
  */
-nodev()
+int 
+nodev (void)
 {
 
 	u.u_error = ENODEV;
@@ -185,6 +185,7 @@ nodev()
  * Null routine; placed in insignificant entries
  * in the bdevsw and cdevsw tables.
  */
-nulldev()
+int 
+nulldev (void)
 {
 }
