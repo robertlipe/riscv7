@@ -8,7 +8,11 @@
 #include "../h/proc.h"
 #include "../h/reg.h"
 #include "../h/seg.h"
+#include "../h/types.h"
+#include "../sys/memlayout.h"
+#include "../h/riscv.h"
 
+#if 0
 #define	EBIT	1		/* user error bit in PS: C-bit */
 #define	USER	0200		/* user-mode flag added to dev */
 
@@ -31,8 +35,8 @@ char	regloc[10] =
  * get copied back on return.
  * dev is the kind of trap that occurred.
  */
-trap(tr)
-struct trap tr;
+int
+trap (struct trap tr)
 {
 	register i;
 	register *a;
@@ -172,11 +176,113 @@ out:
 	if (u.u_fpsaved)
 		restfp(&u.u_fps);
 }
+#else
+char	regloc[10]; // ???
+
+
+
+const char* exceptions_text[] = {
+	"Instruction address misaligned",
+	"Instruction access fault",
+	"Illegal instruction",
+	"Breakpoint",
+	"Load address misaligned",
+	"Load address fault",
+	"Store address misaligned",
+	"Store address fault",
+	"Environment call from user mode",
+	"Environment call from system mode",
+	"reserved 10",
+	"Environment call from machine mode",
+	"Instruction page fault",
+	"Load page fault",
+	"reserved 14",
+	"Store page fault"
+};
+
+const char* interrupts_text[] = {
+	"User software interrupt",
+	"Supervisor software interrupt",
+	"Reserved 2",
+	"Machine software interrupt",
+	"User timer interrupt",
+	"Supervisor timer interrupt",
+	"Reserved 6",
+	"Machine timer interrupt",
+	"User external interrupt",
+	"Supervisor external interrupt",
+	"Reserved 10",
+	"Machine external interrupt",
+	"Reserved 12",
+	"Reserved 13",
+	"Reserved 14",
+	"Reserved 15"
+};
+
+void machinetrap (void) __attribute__ ((interrupt, aligned(8)));
+void
+machinetrap ()
+{
+	// printf("Size of int  %d long %d long long %d\n", sizeof(int), sizeof(long), sizeof (long long));
+//	long sepc = get_sepc();
+//	long scause = get_scause();
+	long mepc = get_mepc();
+	long mcause = get_mcause();
+  long mstatus = (unsigned int) get_mstatus();
+	const char* message;
+
+	// Hardware interrupt, not a trap.
+	if (mcause & 0x80000000) {
+		mcause &= 0x7ffffff; // Mask off the "is interrupt bit"
+// TODO: find out why both machine and supervisor mode fire
+		if (mcause == 7 || mcause == 5) {
+			clock(NULL);
+
+#if BOOGER
+int interval = 100000;
+	int id = get_mhartid();
+if (1) {
+#if __riscv_xlen == 32
+  *(uint32*)CLINT_MTIMECMP(id) = *(uint32*)CLINT_MTIME + interval;
+#elif __riscv_xlen == 64
+  *(uint64*)CLINT_MTIMECMP(id) = *(uint64*)CLINT_MTIME + interval;
+#else
+#error bad riscv_xlen
+#endif
+} else {
+  printf("Skipping timer reload\n");
+}
+#endif
+			return;
+		}
+
+		if (mcause <= sizeof(interrupts_text)/sizeof(interrupts_text[0])) {
+			message = interrupts_text[mcause];
+		}
+		
+	} else {
+		if (mcause <= sizeof(exceptions_text)/sizeof(exceptions_text[0])) {
+			message = exceptions_text[mcause];
+		} else {
+			message = "unknown exception";
+		}
+	}	
+
+	printf("Trap! mcause %x\n", mcause);
+	printf("Trap! mepc %x\n", mepc);
+	printf("Trap! mstatus %x\n", mstatus);
+
+	printf("Fatal Exception at %p: %s", mepc, message);
+
+asm("1: wfi; j 1b");
+}
+#endif
 
 /*
  * stray interrupt
  */
-stray(dev)
+int
+stray (int dev)
 {
 	printf("stray interrupt %d ignored\n", dev & ~0x20);
 }
@@ -184,7 +290,8 @@ stray(dev)
 /*
  * nonexistent system call-- set fatal error code.
  */
-nosys()
+int
+nosys (void)
 {
 	u.u_error = EINVAL;
 }
@@ -192,6 +299,7 @@ nosys()
 /*
  * Ignored system call
  */
-nullsys()
+int
+nullsys (void)
 {
 }

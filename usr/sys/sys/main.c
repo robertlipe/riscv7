@@ -14,7 +14,7 @@
 #include "../h/conf.h"
 #include "../h/buf.h"
 
-extern int kend;
+extern long _kend; // start + text + data + bss
 
 /*
  * Initialization code.
@@ -32,15 +32,23 @@ extern int kend;
  * loop at low address in user mode -- /etc/init
  *	cannot be executed.
  */
-main()
+int
+main (void)
 {
+extern long _sbss, _sdata, _edata, _sidata, __bss_start, _ebss;
+  // Copy initialized data from .sidata (Flash) to .data (RAM)
+// Note use of BCOPY which has the arguments backward
+  bcopy( &_sidata, &_sdata, ( ( void* )&_edata - ( void* )&_sdata ) );
+  // Clear the .bss RAM section.
+  bzero( &_sbss, ( ( void* )&_ebss - ( void* )&_sbss ) );
 
+// SEGGER_RTT_Init();
 	startup();
 	/*
 	 * set up system process
 	 */
 
-	proc[0].p_addr = btoc(kend) + 7; /* XXX */
+	proc[0].p_addr = btoc(&_kend) + 7; /* XXX */
 	proc[0].p_size = USIZE;
 	proc[0].p_stat = SRUN;
 	proc[0].p_flag |= SLOAD|SSYS;
@@ -56,12 +64,17 @@ main()
 	clkstart();
 	cinit();
 	binit();
+#if 1
 	iinit();
+
 	rootdir = iget(rootdev, (ino_t)ROOTINO);
 	rootdir->i_flag &= ~ILOCK;
 	u.u_cdir = iget(rootdev, (ino_t)ROOTINO);
 	u.u_cdir->i_flag &= ~ILOCK;
 	u.u_rdir = NULL;
+#else
+printf("Skipped init");
+#endif
 
 	/*
 	 * make init process
@@ -92,7 +105,8 @@ main()
  * panic: iinit -- cannot read the super
  * block. Usually because of an IO error.
  */
-iinit()
+int
+iinit (void)
 {
 	register struct buf *cp, *bp;
 	register struct filsys *fp;
@@ -128,7 +142,8 @@ char	buffers[NBUF][BSIZE+BSLOP];
  * Initialize the buffer I/O system by freeing
  * all buffers and setting all device buffer lists to empty.
  */
-binit()
+int
+binit (void)
 {
 	register struct buf *bp;
 	register struct buf *dp;
