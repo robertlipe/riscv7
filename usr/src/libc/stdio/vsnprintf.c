@@ -30,9 +30,11 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-//#include <stdbool.h>
 #include <stdbool.h>
 #include <stdint.h>
+// FIXME: why aren't these coming from stdint?
+typedef __INTMAX_TYPE__ intmax_t;
+typedef __UINTPTR_TYPE__ uintptr_t;
 
 #include "printf.h"
 
