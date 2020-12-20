@@ -21,8 +21,10 @@ int uphi;
 
 /* sutab and estabut */
 
-sureg()
+int
+sureg (void)
 {
+#if 0
 	register i, a, n;
 	int taddr, daddr;
 	struct text *tp;
@@ -47,9 +49,13 @@ sureg()
 	for (n = u.u_utab[NS]; n--; a += PGSZ)
 		upt[++i] = a | 7;
 	invd();
+#else
+printf("Skipping sureg. No idea\n"); 
+#endif
 }
 
-estabur(nt, nd, ns, sep, xrw)
+int
+estabur (int nt, int nd, int ns, int sep, int xrw)
 {
 	if (nt + nd + ns > 1023)
 		goto err;
@@ -66,7 +72,8 @@ err:
 	return (-1);
 }
 
-clearseg(d)
+int
+clearseg (int d)
 {
 	unsigned xd;
 
@@ -74,7 +81,8 @@ clearseg(d)
 	bzero(xd, PGSZ);
 }
 
-copyseg(s, d)
+int
+copyseg (int s, int d)
 {
 	unsigned xs, xd;
 
@@ -86,9 +94,9 @@ copyseg(s, d)
 }
 
 unsigned
-physaddr(addr)
-unsigned addr;
+physaddr (unsigned addr)
 {
+#if 0
 	unsigned d, t, o, x, z;
 	unsigned *pt;
 
@@ -103,4 +111,8 @@ unsigned addr;
 		z = x + o;
 	}
 	return z;
+#else
+	// We have no MMU - ALL addrs are physaddrs.
+	return addr;
+#endif
 }
