@@ -1,0 +1,1 @@
+exec /Users/robertlipe/src/bl_iot_sdk/toolchain/riscv/Darwin/bin/riscv64-unknown-elf-gdb $*

@@ -1,0 +1,7 @@
+h
+loadfile md0unix.bin, 0x08000000
+RSetType 1
+r
+setpc 0x08000000
+q
+

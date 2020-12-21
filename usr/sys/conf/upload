@@ -1,0 +1,6 @@
+/Applications/SEGGER/JLink/JlinkExe \
+    -device GD32VF103CBT6 \
+    -speed 4000 \
+    -if jtag \
+    -autoconnect 1 \
+    -JTAGConf -1,-1 < upload.scr
