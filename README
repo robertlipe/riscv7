@@ -1,10 +1,10 @@
 This is the (not-yet working) port of UNIXv7 system to RISC-V.
 
 It's currently targeting the GD32V as found on the Longnan Nano, a
-super-inexpensive ($5-ish) SBC that includes a full USB-C controller, 
+super-inexpensive ($5-ish) SBC that includes a full USB-C controller,
 including OTG. This makes it possible to appear as a mass storage device,
-a serial port, or other USB peripherals. This is more powerful than 
-devices like the K210 or BL602 which require an external USB->Serial 
+a serial port, or other USB peripherals. This is more powerful than
+devices like the K210 or BL602 which require an external USB->Serial
 adapter that can support none of these. RISCv7 does not (yet) use any of
 this awesomeness.
 
@@ -17,7 +17,7 @@ to a single part.
 
 An early design choice was to NOT design my own ABI and calling convention.
 Nor did I choose to torture myself with ancient Make. Relying on a sane
-GNU make on the host is fair game. It's easy to find riscv64-gcc in 
+GNU make on the host is fair game. It's easy to find riscv64-gcc in
 prepackaged binaries (Mac: Homebrew. Debian has a package) where 32-bit
 tools are harder to find. The tools support 32-bit modes so the convenience
 of calling riscv32-gcc over riscv64-gcc with -march=rv32imac -mabi=ilp32 to
@@ -26,16 +26,16 @@ the early UNIXes, binary compatibilty isn't a concern; I may change system
 call numbers or visible symbols pretty much at whim.
 
 Similarly, I've not fought a fierce battle to keep the code K&R. As this
-code is meant to be educational (it certainly has been for this author) 
+code is meant to be educational (it certainly has been for this author)
 more than historical purity, familiarity with ANSI function declarations,
 judicious use of declarations, va_arg, not relying on implicit int, the
 presence of 'void', the absence of 'register' and so on are all considered
-good taste. Indeed, especially with 64-bit being in sight, implicit int 
+good taste. Indeed, especially with 64-bit being in sight, implicit int
 and such can lead to really screwy stack frames so we're just trying to
-head that off. 
+head that off.
 
 I started development thinking I would write ALL the code myself and not
-rely on any namby-pamby vendor code. That quickly got old. In sys/n200 
+rely on any namby-pamby vendor code. That quickly got old. In sys/n200
 (another unfortunate naming choice) is code for the Nucleisys 200 core as
 used in the GD32V, the Gigadevice libraries for interfacing with SPI, DMA,
 and more, as well as some other third party libraries. There is evidence
@@ -51,7 +51,7 @@ There is a convenience script named 'upload' which does the obvious thing,
 calling Jlink with the appropriate fiddly parameters. 'run_nano' does a
 build, uploads the kernel to the board, and starts a GDB server.
 
-For debugging, there are x/ and z/ subdirectories (bad, I know...) that 
+For debugging, there are x/ and z/ subdirectories (bad, I know...) that
 have .gdbinits that offer convenience macros to reboot the kernel, reload
 it (via GDB), start the remote debugging, and automatically have breakpoints
 on panic and other places you hope to not be. These will probably need
@@ -71,35 +71,48 @@ Status & Known problems:
 
 Boot is working.
 
-Timer interrupts are working. 
+Timer interrupts are working.
 
-The display is mostly working.
+The display is mostly working. It's too small to be really useful, but
+displaying interrupt ticks or enter/exit style prints can still be handy.
+The display is NOT hooked as a console device with ANSI escape sequences
+nor is it even hooked as a serial console. It's shoved into putchar()
+inside sc.c,.
 
-Memory management is a mess.  The code I started from, Robert Nordier's 
-386 port of UNIXv7 has some hard coded page numbers in memory layout 
+
+Memory management is a mess.  The code I started from, Robert Nordier's
+386 port of UNIXv7 has some hard coded page numbers in memory layout
 in the kernel. This has proven hard to undo.
 
 The code currently gets to the point where it trampolines the assembler
-code to start an exec() to load and run 
+code to start an exec() to load and run.
 
 Sometime the LCD doesn't wake properly. I think there's something missing
 in the reset sequence. As embarrassing/ridiculous as this sounds, building
-and running gd32vf103inator/examples/LonganNano will "fix" the display. 
+and running gd32vf103inator/examples/LonganNano will "fix" the display.
 Once it's run and whacked the LCD (DMA? SPI?) once, the LCD will literally
 run for days and across hundreds of load/run cycles.
 
 The chip has a hardware scroll, but I cannot make it scroll in the axis it
 needs to scroll. Horizontal scroll is not very useful in a UNIX console.
-One possible way to implement scrolling is to define a text frame buffer 
+One possible way to implement scrolling is to define a text frame buffer
 (maybe with 8-bit color like CGA or VGA) and fully redraw the screen on
-a scroll. I'm not sure if that's a good use of our memory budget. 
+a scroll. I'm not sure if that's a good use of our memory budget.
 
-SD card support is working at a proof-of-concept level. I can open 
+SD card support is working at a proof-of-concept level. I can open
 a DOS-formattted memory card and read files and directories from it.
-I've not implemented partition table support. With SD cards being so 
+I've not implemented partition table support. With SD cards being so
 cheap, I'm not sure it makes sense. More importantly, I've not implemented
 any "real" UNIX-level disk support. Even being a serial device attached
 to SPI, SD is so crazy fast relative to the VAX disk that I'm not sure
 that just spin-waiting a DMA-driven interface isn't the way to go. Shimming
 the code in tf_card.c for disk_read() and disk_write() for synchronous
 reads and writes may be OK.
+
+There is no root filesystem created by the build process. The kernel is
+just injected into flash memory and executed. It works at a reasonable
+speed because flash is copied to SRAM on boot. SRAM is apparently cheaper
+than caches at this size. (!!)
+
+Segger's equivalent of ARM's Semihosting would probably be good
+to implement for debugging.
