@@ -1,0 +1,67 @@
+I experimented building the code in a 2018 Debian LTS release in a docker image. It almost works.
+
+If I were to add a dockerfile for CI, it might look something like this:
+
+
+# This is a bit of a lie. It installs the RISC tools as if we were building for a Linux
+# RISC-V system, when we really prefer the riscv64-unknown-elf-blah form. This just gets 
+# basic tools up.
+dpkg --add-architecture riscv64
+apt-get update               \
+ && apt-get -y -q upgrade        \
+ && apt-get -y -q install  \       
+ git        \
+ curl        \
+ vim        \
+ gcc        \
+ gcc-riscv64-linux-gnu \
+ g++-riscv64-linux-gnu
+
+
+# This installs /opt/SEGGER/JLink/JLinkExe - What a gross name!
+# /opt/SEGGER/JLink/*CL* may be more suited for headless/scripting use
+# I ran into a dead end as the CL tools seem to work, but JLink wants
+# to splash an X dialogue just to ask if we accept the license. Ugh.
+# This whole section is optional if you dont have SEGGER pods in your life.
+curl -daccept_license_agreement=accepted https://www.segger.com/downloads/jlink/JLink_Linux_x86_64.deb -O /tmp/blah.deb
+dpkg -i JLink_Linux_x86_64.deb 
+ apt-get -y -q install  \       
+ libfreetype6 \
+ libsm6 \
+ libxrender-dev \
+ libxrandr-dev \
+ libxfixes3 \
+ libxcursor1 \
+ libfontconfig1 \
+
+# Two manual tweaks are needed for now
+Edit tools/common.mk. Change
+PREFIX = riscv64-unknown-elf-
+to
+PREFIX = riscv64-linux-gnu-
+
+Edit tools/kernel.mk
+In GCC10, we use the -mno-relax flag. See
+https://gcc.gnu.org/onlinedocs/gcc/RISC-V-Options.html
+I need to test if we HAD to or just did. Sine the
+Linux versions are still GCC 7 (sigh) just remove the
+unsupported -fno-release flag
+
+This is probably a bug. Edit usr/sys/sys/n200/n200/n200_func.c
+At the top, just whack all the includes where the code wrongly
+thinks it's being called in user space with "normal" libc.
+That's clearly a bad idea.
+// See LICENSE for license details.
+#include <gd32vf103.h>
+//#include <stdio.h>
+//#include <stdlib.h>
+//#include <string.h>
+//#include <unistd.h>
+
+
+#
+# Fetch and build the code. 
+
+git clone https://github.com/robertlipe/riscv7.git
+cd riscv7/usr/sys/conf
+make
