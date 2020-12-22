@@ -1,9 +1,5 @@
 // See LICENSE for license details.
 #include <gd32vf103.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
 
 #include "riscv_encoding.h"
 #include "n200_func.h"
