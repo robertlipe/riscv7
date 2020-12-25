@@ -1,0 +1,3 @@
+This doesn't actually work now, but was used in the original bringup.
+I *think* the current issue is that the GD32V memory map wants to see
+RAM at 0x0200.0000 while QEmu want it at 0x0000.0000 or maybe 0x800.000.
