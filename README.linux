@@ -43,21 +43,9 @@ PREFIX = riscv64-linux-gnu-
 Edit tools/kernel.mk
 In GCC10, we use the -mno-relax flag. See
 https://gcc.gnu.org/onlinedocs/gcc/RISC-V-Options.html
-I need to test if we HAD to or just did. Sine the
+I need to test if we HAD to or just did. Since the
 Linux versions are still GCC 7 (sigh) just remove the
 unsupported -fno-release flag
-
-This is probably a bug. Edit usr/sys/sys/n200/n200/n200_func.c
-At the top, just whack all the includes where the code wrongly
-thinks it's being called in user space with "normal" libc.
-That's clearly a bad idea.
-// See LICENSE for license details.
-#include <gd32vf103.h>
-//#include <stdio.h>
-//#include <stdlib.h>
-//#include <string.h>
-//#include <unistd.h>
-
 
 #
 # Fetch and build the code. 

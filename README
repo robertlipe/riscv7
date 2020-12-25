@@ -21,7 +21,7 @@ GNU make on the host is fair game. It's easy to find riscv64-gcc in
 prepackaged binaries (Mac: Homebrew. Debian has a package) where 32-bit
 tools are harder to find. The tools support 32-bit modes so the convenience
 of calling riscv32-gcc over riscv64-gcc with -march=rv32imac -mabi=ilp32 to
-get 32-bit code isn't worth it. The ABI is "whatever these tools do". Like
+get 32-bit code isn't worth it[1]. The ABI is "whatever these tools do". Like
 the early UNIXes, binary compatibilty isn't a concern; I may change system
 call numbers or visible symbols pretty much at whim.
 
@@ -116,3 +116,7 @@ than caches at this size. (!!)
 
 Segger's equivalent of ARM's Semihosting would probably be good
 to implement for debugging.
+
+[1] For more info on RISC-V embedded chains, see 
+  https://riscv.org/wp-content/uploads/2015/02/riscv-software-stack-tutorial-hpca2015.pdf
+  https://github.com/riscv/riscv-gnu-toolchain
