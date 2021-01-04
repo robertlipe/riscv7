@@ -20,10 +20,6 @@ void switch_m2u_mode();
 
 uint32_t get_mtime_freq();
 
-uint32_t mtime_lo(void);
-
-uint32_t mtime_hi(void);
-
 uint64_t get_mtime_value();
 
 uint64_t get_instret_value();

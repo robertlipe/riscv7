@@ -24,13 +24,13 @@ void switch_m2u_mode(){
     asm volatile ("1:":::);
 } 
 
-uint32_t mtime_lo(void)
+static uint32_t inline mtime_lo(void)
 {
   return *(volatile uint32_t *)(TIMER_CTRL_ADDR + TIMER_MTIME);
 }
 
 
-uint32_t mtime_hi(void)
+static uint32_t inline mtime_hi(void)
 {
   return *(volatile uint32_t *)(TIMER_CTRL_ADDR + TIMER_MTIME + 4);
 }
