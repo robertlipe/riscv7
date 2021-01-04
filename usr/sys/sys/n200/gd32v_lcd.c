@@ -4,20 +4,61 @@
 // Or https://github.com/Xinyuan-LilyGO/LilyGO-T-DisplayGD32/blob/master/src/lcd/lcd.c
 
 #include "gd32v_lcd.h"
+#include "gd32vf103.h"
+#include "gd32vf103_dma.h"
 #include "oledfont.h"
+
+#define ST7789_SLPOUT       0x11
+#define ST7789_NORON        0x13
+
+#define ST7789_INVON        0x21
+#define ST7789_CASET        0x2A
+#define ST7789_RASET        0x2B
+#define ST7789_RAMWR        0x2C
+#define ST7789_DISPOFF      0x28
+#define ST7789_DISPON       0x29
+#define TFT_MAD_COLOR_ORDER TFT_MAD_RGB
+#define TFT_MAD_MY          0x80
+#define TFT_MAD_MX          0x40
+#define TFT_MAD_MV          0x20
+#define TFT_MAD_ML          0x10
+
+#define ST7789_MADCTL       0x36      // Memory data access control
+#define TFT_MAD_RGB         0x08
+#define ST7789_COLMOD       0x3A
+
+#define ST7789_PORCTRL      0xB2      // Porch control
+#define ST7789_GCTRL        0xB7      // Gate control
+#define ST7789_VCOMS        0xBB      // VCOMS setting
+#define ST7789_LCMCTRL      0xC0      // LCM control
+#define ST7789_VDVVRHEN     0xC2      // VDV and VRH command enable
+#define ST7789_VRHS         0xC3      // VRH set
+#define ST7789_VDVSET       0xC4      // VDV setting
+#define ST7789_FRCTR2       0xC6      // FR Control 2
+#define ST7789_PWCTRL1      0xD0      // Power control 1
+#define ST7789_PVGAMCTRL    0xE0      // Positive voltage gamma control
+#define ST7789_NVGAMCTRL    0xE1      // Negative voltage gamma control
 
 #define BMP 0
 #if BMP
 #include "n200/bmp.h"
 #endif
 
-u16 BACK_COLOR;   //Background color
+u16 BACK_COLOR;   // Background color
 int lcd_disabled = 0; // Device has failed. Quit trying.
 int cursor_x;
 int cursor_y;
 // Arbitrary max tries before declaring LCD dead.
 // In practice, I've not seen it be > 1.
 #define MAX_TRIES 1000 
+
+u16 colstart = 52;
+u16 rowstart = 40;
+u16 init_height_ = 240;
+u16 init_width_ = 135;
+u16 width_ = 135;
+u16 height_ = 240;
+u8 rotation_ = 0;
 
 
 /******************************************************************************
@@ -82,7 +123,7 @@ if (timeout_ct > m) m = timeout_ct;
 ******************************************************************************/
 void LCD_WR_DATA8(u8 dat)
 {
-	OLED_DC_Set();//Write data
+	OLED_DC_Set();  // Write data
 	LCD_Writ_Bus(dat);
 }
 
@@ -94,7 +135,7 @@ void LCD_WR_DATA8(u8 dat)
 ******************************************************************************/
 void LCD_WR_DATA(u16 dat)
 {
-	OLED_DC_Set();//Write data
+	OLED_DC_Set();  // Write data
 	LCD_Writ_Bus(dat>>8);
 	LCD_Writ_Bus(dat);
 }
@@ -107,7 +148,7 @@ void LCD_WR_DATA(u16 dat)
 ******************************************************************************/
 void LCD_WR_REG(u8 dat)
 {
-	OLED_DC_Clr();//Write command
+	OLED_DC_Clr();  //Write command
 	LCD_Writ_Bus(dat);
 }
 
@@ -122,43 +163,43 @@ void LCD_Address_Set(u16 x1,u16 y1,u16 x2,u16 y2)
 {
 	if(USE_HORIZONTAL==0)
 	{
-		LCD_WR_REG(0x2a);//Column address settings
+		LCD_WR_REG(ST7789_CASET);  //Column address settings
 		LCD_WR_DATA(x1+26);
 		LCD_WR_DATA(x2+26);
-		LCD_WR_REG(0x2b);//Row address setting
+		LCD_WR_REG(ST7789_RASET);  //Row address setting
 		LCD_WR_DATA(y1+1);
 		LCD_WR_DATA(y2+1);
-		LCD_WR_REG(0x2c);//Memory write
+		LCD_WR_REG(ST7789_RAMWR);  //Memory write
 	}
 	else if(USE_HORIZONTAL==1)
 	{
-		LCD_WR_REG(0x2a);//Column address settings
+		LCD_WR_REG(ST7789_CASET);  //Column address settings
 		LCD_WR_DATA(x1+26);
 		LCD_WR_DATA(x2+26);
-		LCD_WR_REG(0x2b);//Row address setting
+		LCD_WR_REG(ST7789_RASET);  //Row address setting
 		LCD_WR_DATA(y1+1);
 		LCD_WR_DATA(y2+1);
-		LCD_WR_REG(0x2c);//Memory write
+		LCD_WR_REG(ST7789_RAMWR);  //Memory write
 	}
 	else if(USE_HORIZONTAL==2)
 	{
-		LCD_WR_REG(0x2a);//Column address settings
+		LCD_WR_REG(ST7789_CASET);  //Column address settings
 		LCD_WR_DATA(x1+1);
 		LCD_WR_DATA(x2+1);
-		LCD_WR_REG(0x2b);//Row address setting
+		LCD_WR_REG(ST7789_RASET);  //Row address setting
 		LCD_WR_DATA(y1+26);
 		LCD_WR_DATA(y2+26);
-		LCD_WR_REG(0x2c);//Memory write
+		LCD_WR_REG(ST7789_RAMWR);  //Memory write
 	}
 	else
 	{
-		LCD_WR_REG(0x2a);//Column address settings
+		LCD_WR_REG(ST7789_CASET);  //Column address settings
 		LCD_WR_DATA(x1+1);
 		LCD_WR_DATA(x2+1);
-		LCD_WR_REG(0x2b);//Row address setting
+		LCD_WR_REG(ST7789_RASET);  //Row address setting
 		LCD_WR_DATA(y1+26);
 		LCD_WR_DATA(y2+26);
-		LCD_WR_REG(0x2c);//Memory write
+		LCD_WR_REG(ST7789_RAMWR);  //Memory write
 	}
 }
 
@@ -171,7 +212,7 @@ void LCD_Address_Set(u16 x1,u16 y1,u16 x2,u16 y2)
 */
 void dma_config(void)
 {
-	dma_parameter_struct dma_init_struct;
+    dma_parameter_struct dma_init_struct;
 
     /* SPI0 transmit dma config:DMA0,DMA_CH2 */
     dma_deinit(DMA0, DMA_CH2);
@@ -217,10 +258,89 @@ void spi_config(void)
     spi_init_struct.endian               = SPI_ENDIAN_MSB;
     spi_init(SPI0, &spi_init_struct);
 
-	spi_crc_polynomial_set(SPI0,7);
-	spi_enable(SPI0);
+    spi_crc_polynomial_set(SPI0,7);
+    spi_enable(SPI0);
 }
 #endif
+
+void setRotation(uint8_t m)
+{
+    rotation_ = m % 4;
+    LCD_WR_REG(ST7789_MADCTL);
+    switch (rotation_) {
+    case 0:
+        colstart = 52;
+        rowstart = 40;
+        width_  = init_width_;
+        height_ = init_height_;
+        LCD_WR_DATA8(TFT_MAD_COLOR_ORDER);
+        break;
+
+    case 1:
+        colstart = 40;
+        rowstart = 53;
+        width_  = init_height_;
+        height_ = init_width_;
+        LCD_WR_DATA8(TFT_MAD_MX | TFT_MAD_MV | TFT_MAD_COLOR_ORDER);
+        break;
+    case 2:
+        colstart = 52;
+        rowstart = 40;
+        width_  = init_width_;
+        height_ = init_height_;
+        LCD_WR_DATA8(TFT_MAD_MX | TFT_MAD_MY | TFT_MAD_COLOR_ORDER);
+        break;
+    case 3:
+        colstart = 40;
+        rowstart = 52;
+        width_  = init_height_;
+        height_ = init_width_;
+        LCD_WR_DATA8(TFT_MAD_MV | TFT_MAD_MY | TFT_MAD_COLOR_ORDER);
+        break;
+    }
+}
+
+#define spi_wait_idle()     do { while (SPI_STAT(SPI0) & SPI_STAT_TRANS); } while(0)
+
+#define lcd_mode_data()     do { gpio_bit_set  (GPIOB, GPIO_PIN_0); } while(0)
+
+static lcd_panel_init() 
+{
+    static const uint8_t init_sequence[] =
+    {
+        ST7789_INVON, 0xff, // display inversion
+        0xb1, 0x05, 0x3a, 0x3a, 0xff, // frame freq, color: RTNA + FPA + BNA
+        ST7789_PORCTRL, 0x05, 0x3a, 0x3a, 0xff, // frame freq, idle: RTNB + FPB + BPB
+        0xb3, 0x05, 0x3a, 0x3a, 0x05, 0x3a, 0x3a, 0xff,  // ff: partial
+        0xb4, 0x03, 0xff,
+        ST7789_LCMCTRL, 0x62, 0x02, 0x04, 0xff,
+        0xc1, 0xc0, 0xff,
+        ST7789_VDVVRHEN, 0x0d, 0x00, 0xff,
+        ST7789_VRHS, 0x8d, 0x6a, 0xff,
+        ST7789_VDVSET, 0x8d, 0xee, 0xff,
+        0xc5, 0x0e, 0xff, // VCCOM
+        ST7789_PVGAMCTRL, 0x10, 0x0e, 0x02, 0x03, 0x0e, 0x07, 0x02, 0x07, 0x0a, 0x12, 0x27, 0x37, 0x00, 0x0d, 0x0e, 0x10, 0xff,
+        ST7789_NVGAMCTRL, 0x10, 0x0e, 0x03, 0x03, 0x0f, 0x06, 0x02, 0x08, 0x0a, 0x13, 0x26, 0x36, 0x00, 0x0d, 0x0e, 0x10, 0xff,
+        ST7789_COLMOD, 0x55, 0xff, // format of RGB picture data: 16bpp
+        ST7789_MADCTL, 0x78, 0xff, // Horiz data
+        ST7789_DISPON, 0xff, // Display on.
+        ST7789_SLPOUT, 0xff, // Turn off sleep mode
+        0xff
+    };
+
+   // Initialize the display.
+    for (const uint8_t* p = init_sequence; *p != 0xff; p++)
+    {
+        LCD_WR_REG(*p++);
+        if (*p == 0xff)
+            continue;
+        spi_wait_idle();
+        lcd_mode_data();
+        while(*p != 0xff)
+            LCD_WR_DATA8(*p++);
+    }
+}
+
 
 /******************************************************************************
 	   Function description: LCD initialization function
@@ -279,11 +399,11 @@ void Lcd_Init(void)
 	OLED_RST_Set();
 	delay_1ms(20);
 	OLED_BLK_Set();
-
-	LCD_WR_REG(0x11);	// turn off sleep mode
+#if 0
+	LCD_WR_REG(ST7789_SLPOUT);	// turn off sleep mode
 	delay_1ms(100);
 
-	LCD_WR_REG(0x21);	// display inversion mode
+	LCD_WR_REG(ST7789_INVON);	// display inversion mode
 
 	LCD_WR_REG(0xB1);	// Set the frame frequency of the full colors normal mode
 						// Frame rate=fosc/((RTNA x 2 + 40) x (LINE + FPA + BPA +2))
@@ -310,7 +430,7 @@ void Lcd_Init(void)
 	LCD_WR_REG(0xB4);
 	LCD_WR_DATA8(0x03);
 
-	LCD_WR_REG(0xC0);
+	LCD_WR_REG(ST7789_LCMCTRL);
 	LCD_WR_DATA8(0x62);
 	LCD_WR_DATA8(0x02);
 	LCD_WR_DATA8(0x04);
@@ -318,22 +438,22 @@ void Lcd_Init(void)
 	LCD_WR_REG(0xC1);
 	LCD_WR_DATA8(0xC0);
 
-	LCD_WR_REG(0xC2);
+	LCD_WR_REG(ST7789_VDVVRHEN);
 	LCD_WR_DATA8(0x0D);
 	LCD_WR_DATA8(0x00);
 
-	LCD_WR_REG(0xC3);
+	LCD_WR_REG(ST7789_VRHS);
 	LCD_WR_DATA8(0x8D);
 	LCD_WR_DATA8(0x6A);   
 
-	LCD_WR_REG(0xC4);
+	LCD_WR_REG(ST7789_VDVSET);
 	LCD_WR_DATA8(0x8D); 
 	LCD_WR_DATA8(0xEE); 
 
 	LCD_WR_REG(0xC5);  /*VCOM*/
 	LCD_WR_DATA8(0x0E);    
 
-	LCD_WR_REG(0xE0);
+	LCD_WR_REG(ST7789_PVGAMCTRL);
 	LCD_WR_DATA8(0x10);
 	LCD_WR_DATA8(0x0E);
 	LCD_WR_DATA8(0x02);
@@ -351,7 +471,7 @@ void Lcd_Init(void)
 	LCD_WR_DATA8(0x0E);
 	LCD_WR_DATA8(0x10);
 
-	LCD_WR_REG(0xE1);
+	LCD_WR_REG(ST7789_NVGAMCTRL);
 	LCD_WR_DATA8(0x10);
 	LCD_WR_DATA8(0x0E);
 	LCD_WR_DATA8(0x03);
@@ -369,17 +489,21 @@ void Lcd_Init(void)
 	LCD_WR_DATA8(0x0E);
 	LCD_WR_DATA8(0x10);
 
-	LCD_WR_REG(0x3A);	// define the format of RGB picture data
+	LCD_WR_REG(ST7789_COLMOD);	// define the format of RGB picture data
 	LCD_WR_DATA8(0x05);	// 16-bit/pixel
 
-	LCD_WR_REG(0x36);
+	LCD_WR_REG(ST7789_MADCTL);
 	if(USE_HORIZONTAL==0)LCD_WR_DATA8(0x08);
 	else if(USE_HORIZONTAL==1)LCD_WR_DATA8(0xC8);
 	else if(USE_HORIZONTAL==2)LCD_WR_DATA8(0x78);
 	else LCD_WR_DATA8(0xA8);
 
-	LCD_WR_REG(0x29);	// Display On
+	LCD_WR_REG(ST7789_DISPON);	// Display On
 LCD_VerticalScrollSetup(0, 0, 1);
+#else
+	lcd_panel_init();
+#endif
+	setRotation(1);
 cursor_x = 0;
 cursor_y = 0;
 }
@@ -392,13 +516,11 @@ cursor_y = 0;
 void LCD_Clear(u16 Color)
 {
 	u16 i,j;  	
-	LCD_Address_Set(0,0,LCD_W-1,LCD_H-1);
-	for(i=0;i<LCD_W;i++)
-	  {
-			for (j=0;j<LCD_H;j++)
-				{
-					LCD_WR_DATA(Color);
-				}
+	LCD_Address_Set(0, 0, width_ - 1, height_ - 1);
+	for(i = 0; i < width_; i++) {
+		for (j = 0; j < height_; j++) {
+			LCD_WR_DATA(Color);
+		}
 	  }
 }
 
@@ -417,19 +539,19 @@ void LCD_ShowChinese(u16 x,u16 y,u8 index,u8 size,u16 color)
 	if(size==16){temp=Hzk16;}//选择字号
 	if(size==32){temp=Hzk32;}
   LCD_Address_Set(x,y,x+size-1,y+size-1); //设置一个汉字的区域
-  size1=size*size/8;//一个汉字所占的字节
-	temp+=index*size1;//写入的起始位置
+  size1=size*size/8;  //一个汉字所占的字节
+	temp+=index*size1;  //写入的起始位置
 	for(j=0;j<size1;j++)
 	{
 		for(i=0;i<8;i++)
 		{
 		 	if((*temp&(1<<i))!=0)//从数据的低位开始读
 			{
-				LCD_WR_DATA(color);//点亮
+				LCD_WR_DATA(color);  //点亮
 			}
 			else
 			{
-				LCD_WR_DATA(BACK_COLOR);//不点亮
+				LCD_WR_DATA(BACK_COLOR);  //不点亮
 			}
 		}
 		temp++;
@@ -443,9 +565,9 @@ void LCD_ShowChinese(u16 x,u16 y,u8 index,u8 size,u16 color)
        Entry data: x, y starting coordinates
        Return value: None
 ******************************************************************************/
-void LCD_DrawPoint(u16 x,u16 y,u16 color)
+void LCD_DrawPoint(u16 x, u16 y, u16 color)
 {
-	LCD_Address_Set(x,y,x,y);//设置光标位置 
+	LCD_Address_Set(x, y, x, y);  //设置光标位置 
 	LCD_WR_DATA(color);
 } 
 
@@ -473,7 +595,7 @@ void LCD_Fill(u16 xsta,u16 ysta,u16 xend,u16 yend,u16 color)
 	LCD_Address_Set(xsta,ysta,xend,yend);      //设置光标位置 
 	for(i=ysta;i<=yend;i++)
 	{													   	 	
-		for(j=xsta;j<=xend;j++)LCD_WR_DATA(color);//设置光标位置 	    
+		for(j=xsta;j<=xend;j++)LCD_WR_DATA(color);  //设置光标位置 	    
 	} 					  	    
 }
 
@@ -491,19 +613,19 @@ void LCD_DrawLine(u16 x1,u16 y1,u16 x2,u16 y2,u16 color)
 	int incx,incy,uRow,uCol;
 	delta_x=x2-x1; //计算坐标增量 
 	delta_y=y2-y1;
-	uRow=x1;//画线起点坐标
+	uRow=x1;  //画线起点坐标
 	uCol=y1;
 	if(delta_x>0)incx=1; //设置单步方向 
-	else if (delta_x==0)incx=0;//垂直线 
+	else if (delta_x==0)incx=0;  //垂直线 
 	else {incx=-1;delta_x=-delta_x;}
 	if(delta_y>0)incy=1;
-	else if (delta_y==0)incy=0;//水平线 
+	else if (delta_y==0)incy=0;  //水平线 
 	else {incy=-1;delta_y=-delta_x;}
 	if(delta_x>delta_y)distance=delta_x; //选取基本增量坐标轴 
 	else distance=delta_y;
 	for(t=0;t<distance+1;t++)
 	{
-		LCD_DrawPoint(uRow,uCol,color);//画点
+		LCD_DrawPoint(uRow,uCol,color);  //画点
 		xerr+=delta_x;
 		yerr+=delta_y;
 		if(xerr>distance)
@@ -577,9 +699,9 @@ void LCD_ShowChar(u16 x,u16 y,u8 num,u8 mode,u16 color)
     u8 temp;
     u8 pos,t;
 	  u16 x0=x;    
-    if(x>LCD_W-16||y>LCD_H-16)return;	    //Settings window		   
-	num=num-' ';//Get offset value
-	LCD_Address_Set(x,y,x+8-1,y+16-1);      //Set cursor position
+    if(x>width_-16||y>height_-16) return;  // Settings window		   
+	num=num-' ';  //Get offset value
+	LCD_Address_Set(x,y,x+8-1,y+16-1);  // Set cursor position
 	if(!mode) //Non-overlapping
 	{
 		for(pos=0;pos<16;pos++)
@@ -599,10 +721,10 @@ void LCD_ShowChar(u16 x,u16 y,u8 num,u8 mode,u16 color)
 	{
 		for(pos=0;pos<16;pos++)
 		{
-		    temp=asc2_1608[(u16)num*16+pos];		 //Call 1608 font
+		    temp=asc2_1608[(u16)num*16+pos];  //Call 1608 font
 			for(t=0;t<8;t++)
 		    {                 
-		        if(temp&0x01)LCD_DrawPoint(x+t,y+pos,color);//Draw a dot   
+		        if(temp&0x01)LCD_DrawPoint(x+t,y+pos,color);  //Draw a dot   
 		        temp>>=1; 
 		    }
 		}
@@ -620,8 +742,8 @@ void LCD_ShowString(u16 x,u16 y,const u8 *p,u16 color)
 {         
     while(*p!='\0')
     {       
-        if(x>LCD_W-16){x=0;y+=16;}
-        if(y>LCD_H-16){
+        if(x>width_-16){x=0;y+=16;}
+        if(y>height_-16){
 		x = 0;
         	y = LCD_H - 16;
 		LCD_VerticalScroll(16);
@@ -679,9 +801,10 @@ void LCD_Putc(char c, u16 color) {
 void LCD_Erase() {
 	if (cursor_x > 0) {
 		cursor_x--;
-		LCD_ShowChar(cursor_x,cursor_y,' ',0,GREEN);
+		LCD_ShowChar(cursor_x, cursor_y, ' ', 0, GREEN);
         }
 }
+
 void LCD_ClearToEol() {
 	while (cursor_x++ < 320/8) {
 		LCD_Putc(' ', GREEN);
@@ -704,7 +827,7 @@ printf("SH: %d", scroll_height);
 	LCD_WR_DATA8(146);
 	LCD_WR_DATA8(8);
 #if 0
-	LCD_WR_REG(0x36);
+	LCD_WR_REG(ST7789_MADCTL);
 // 08 == left 3 characters OK, rest rotated
 // 78 == normal until scrolling starts
 // c8 = OK at start, but scroll shoves everything LEFT 16px
@@ -713,7 +836,7 @@ printf("SH: %d", scroll_height);
 	LCD_WR_DATA8(0x6c); 
 //	else LCD_WR_DATA8(0); // FIXME: investigate
 #else
-	LCD_WR_REG(0x36);
+	LCD_WR_REG(ST7789_MADCTL);
 // 80 == reversed lettering and rotated
 // 40 == reversed lettering and rotated in scroll
 // 20 == entire reversed lettering 
@@ -740,6 +863,8 @@ LCD_VerticalScroll(unsigned lines)
 // END LOCAL
 
 
+#define SHOW_NUM_NEEDED 0
+#if SHOW_NUM_NEEDED 
 /******************************************************************************
 	   Function description: display numbers
        Entry data: base m, n exponent
@@ -788,8 +913,6 @@ void LCD_ShowNum(u16 x,u16 y,u32 num,u8 len,u16 color)
                    len number of digits to display
        Return value: None
 ******************************************************************************/
-#define SHOW_NUM_NEEDED 0
-#if SHOW_NUM_NEEDED 
 void LCD_ShowNum1(u16 x,u16 y,float num,u8 len,u16 color)
 {         	
 	u8 t,temp;

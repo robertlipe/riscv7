@@ -31,9 +31,9 @@ typedef unsigned long u32;
 //#define LED_ON 
 //#define LED_OFF 
 
-#define SPI0_CFG 1  //hardware spi
-// #define SPI0_CFG 2  //hardware spi dma
-// #define SPI0_CFG 3  //software spi
+#define SPI0_CFG 1  // hardware spi
+// #define SPI0_CFG 2  // hardware spi dma  (missing code)
+// #define SPI0_CFG 3  // software spi
 
 #define FRAME_SIZE  25600
 
