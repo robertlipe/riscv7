@@ -233,6 +233,15 @@ void Lcd_Init(void)
 	rcu_periph_clock_enable(RCU_GPIOA);
 	rcu_periph_clock_enable(RCU_GPIOB);
 
+        // Power up GPIOA and GPIOB. A is probably enabled from LED.
+        RCU->APB2EN |= RCU_APB2EN_PAEN | RCU_APB2EN_PBEN;
+        // Power up SPI0. This bit seems to float randomly on cold power-up.
+        RCU->APB2EN |= RCU_APB2EN_AFEN | RCU_APB2EN_SPI0EN;
+
+	// Clear backlight early just so we can tell we've reset in case
+	// the following doesn't work. In practice this doesn't help much.
+	OLED_BLK_Clr();
+
 #if SPI0_CFG == 1
  	rcu_periph_clock_enable(RCU_AF);
 	rcu_periph_clock_enable(RCU_SPI0);
