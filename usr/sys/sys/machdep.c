@@ -138,7 +138,7 @@ extern char msgbuf[];
 #if 1
 //printf("Console");
 // led_alarm();
-  Lcd_Init();
+  LCD_Init();
 LCD_Clear(BLUE);
 //for(volatile int i = 0; i < 0x100; i++) asm("nop");
 //printf("Console done");
