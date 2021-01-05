@@ -2,7 +2,9 @@
 #include "gd32v_pjt_include.h"
 #include "gd32vf103_gpio.h"
 #include "gd32vf103_rcu.h"
+#include "gdv32_led.h"
 
+// Mapping of symbolic internal names to GPIO pins
 #define LED_GREEN GPIO_OCTL_OCTL1
 #define LED_BLUE  GPIO_OCTL_OCTL2
 #define LED_RED   GPIO_OCTL_OCTL13
@@ -20,18 +22,6 @@ Xled_init() {
     gpio_init(GPIOC, GPIO_MODE_OUT_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_13);
     gpio_init(GPIOA, GPIO_MODE_OUT_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_1|GPIO_PIN_2);
 }
-#if THIS_SHOULD_WORK
-led_red(int on) {
-	PC_OUT(13, !!on);
-}
-led_green(int on) {
-	PC_OUT(1, !!on);
-}
-led_blue(int on) {
-	PC_OUT(2, !!on);
-}
-
-#else
 
 // This is probably not fully correct. The LEDs seems to work only the 
 // second time after the device is hard booted.  Might be bad timer.
@@ -58,94 +48,59 @@ led_init()
   GPIOC->control_hi   |=  ( 0x2 << GPIO_CRH_MODE13_Pos );
 #endif
 
-#if 0
-  ( ( GPIO_TypeDef * ) 0x40011000 )->CRH &= ~( ( ( 0x3UL << ( 20U ) ) ) | ( ( 0x3UL << ( 22U ) ) ) );
-  ( ( GPIO_TypeDef * ) 0x40011000 )->CRH |= ( 0x2 << ( 20U ) );
-
-
-
-
-  ( ( GPIO_TypeDef * ) 0x40010800 )->ODR |= ( 0x1 << 1 |
-                     0x1 << 2 );
-  ( ( GPIO_TypeDef * ) 0x40011000 )->ODR |= ( 0x1 << 13 );
-
-  led_boot();
-  return;
-
-
-
-   ( ( GPIO_TypeDef * ) 0x40010800 )->ODR &= ~( 0x1 << 1 );
-    delay_cycles( ( 500000 ) );
-	led_green(0);
-    delay_cycles( ( 500000 ) );
-	led_green(1);
-
-
-return ;
-    delay_cycles( ( 500000 ) );
-
-    ( ( GPIO_TypeDef * ) 0x40011000 )->ODR &= ~( 0x1 << 13 );
-    delay_cycles( ( 500000 ) );
-
-    ( ( GPIO_TypeDef * ) 0x40010800 )->ODR &= ~( 0x1 << 2 );
-    delay_cycles( ( 500000 ) );
-
-    ( ( GPIO_TypeDef * ) 0x40010800 )->ODR |= ( 0x1 << 1 );
-    delay_cycles( ( 500000 ) );
-
-    ( ( GPIO_TypeDef * ) 0x40011000 )->ODR |= ( 0x1 << 13 );
-    delay_cycles( ( 500000 ) );
-
-    ( ( GPIO_TypeDef * ) 0x40010800 )->ODR |= ( 0x1 << 2 );
-    delay_cycles( ( 500000 ) );
-#endif
 }
-
 
 led_blue(int on)
 {
-#if 0
-	if (on) {
-		    ((GPIO*) GPIOA)->output_control &= ~( LED_BLUE );
-	} else {
-		    ((GPIO*) GPIOA)->output_control |= ( LED_BLUE );
-	}
-#else
 	if (on) {
 		((GPIO*) GPIOA)->bit_clear = LED_BLUE;
 	} else {
 		((GPIO*) GPIOA)->bit_op = LED_BLUE;
 	}
-#endif
 }
+
 led_green(int on)
 {
-#if 0
 	if (on) {
-		    ((GPIO*)GPIOA)->output_control &= ~( LED_GREEN );
+		((GPIO*) GPIOA)->bit_clear = LED_GREEN;
 	} else {
-		    ((GPIO*)GPIOA)->output_control |= ( LED_GREEN );
+		((GPIO*) GPIOA)->bit_op = LED_GREEN;
 	}
-#else
-	volatile uint32_t* reg = &((GPIO*) GPIOA)->bit_op;
-	reg += !!on;
-	*(uint32_t*)reg = LED_GREEN;
-#endif
 }
+
 led_red(int on)
 {
 	if (on) {
-		    ((GPIO*)GPIOC)->output_control &= ~( LED_RED );
+		((GPIO*) GPIOC)->bit_clear = LED_RED;
 	} else {
-		    ((GPIO*)GPIOC)->output_control |= ( LED_RED );
+		((GPIO*) GPIOC)->bit_op = LED_RED;
 	}
 }
-#endif
+
+void set_leds(int leds)
+{
+	if (leds & kLedGreen)
+		((GPIO*) GPIOA)->bit_clear = LED_GREEN;
+	if (leds & kLedBlue)
+		((GPIO*) GPIOA)->bit_clear = LED_BLUE;
+	if (leds & kLedRed)
+		((GPIO*) GPIOC)->bit_clear = LED_RED;
+}
+
+void clear_leds(int leds)
+{
+	if (leds & kLedGreen)
+		((GPIO*) GPIOA)->bit_op = LED_GREEN;
+	if (leds & kLedBlue)
+		((GPIO*) GPIOA)->bit_op = LED_BLUE;
+	if (leds & kLedRed)
+		((GPIO*) GPIOC)->bit_op = LED_RED;
+}
 
 // Just do something to visually indicate we're booting. Should be
 // recognizable in peripheral vision.
 led_boot() {
-     const int snooze = 200000;
+     const int snooze = 20000;
      for (int i = 0; i < 2; i++) {
     	led_red(1);
     	led_green(0);
@@ -162,7 +117,7 @@ led_boot() {
 }
 
 led_alarm() {
-     const int snooze = 200000;
+     const int snooze = 20000;
     	led_red(0);
     	led_green(0);
     	led_blue(0);
