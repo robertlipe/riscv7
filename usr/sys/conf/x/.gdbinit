@@ -28,6 +28,7 @@ break panic
 
 define reload
   load ../md0unix
+  reboot
 end
 
 define reboot
