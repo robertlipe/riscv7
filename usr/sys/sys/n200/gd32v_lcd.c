@@ -5,12 +5,17 @@
 // https://github.com/sipeed/Longan_GD32VF_examples/blob/master/gd32v_lcd/src/lcd/lcd.c
 // Or
 // https://github.com/Xinyuan-LilyGO/LilyGO-T-DisplayGD32/blob/master/src/lcd/lcd.c
+// Hardware seems to be approximately:
+// https://www.displayfuture.com/Display/datasheet/controller/ST7735.pdf
+// eh, more:
+// https://www.displayfuture.com/Display/datasheet/controller/ST7789V.pdf
 
 #include "gd32v_lcd.h"
 
 #include "gd32vf103.h"
 #include "oledfont.h"
 
+#define ST7789_SWRESET 0x01
 #define ST7789_SLPOUT 0x11
 #define ST7789_NORON 0x13
 
@@ -18,8 +23,15 @@
 #define ST7789_CASET 0x2A
 #define ST7789_RASET 0x2B
 #define ST7789_RAMWR 0x2C
+#define ST7789_RAMRD 0x2E
+#define ST7789_PTLAR 0x2E // Partial Area?
 #define ST7789_DISPOFF 0x28
 #define ST7789_DISPON 0x29
+#define ST7789_VSCRDEF 0x33 // Verticjal scrolling def?
+#define ST7789_VSCRDEF 0x37 // Vertial scrolling start of RAM?
+#define ST7789_IDMOFF 0x38 // Idle Mode Off?
+#define ST7789_IDMOFF 0x39 // Idle Mode on?
+
 #define TFT_MAD_COLOR_ORDER TFT_MAD_RGB
 #define TFT_MAD_MY 0x80
 #define TFT_MAD_MX 0x40
@@ -28,17 +40,28 @@
 
 #define ST7789_MADCTL 0x36  // Memory data access control
 #define TFT_MAD_RGB 0x08
-#define ST7789_COLMOD 0x3A
+#define ST7789_COLMOD 0x3A     // Interface Pixel format
+#define ST7789_WRDISBV 0x51     // Write display Brigthness?
+#define ST7789_RDDISBV 0x52     // Read display brightness?
+#define ST7789_RDCTRLD 0x53     // Write display CTRL brigthness?
+#define ST7789_WRCTRLD 0x54     // Read display CTRL brightness?
 
+#define ST7789_RGBCTRL 0xB1    // RGB Interface Cootrol
 #define ST7789_PORCTRL 0xB2    // Porch control
+#define ST7789_FRCTRL1 0xB3    // Porch control
 #define ST7789_GCTRL 0xB7      // Gate control
 #define ST7789_VCOMS 0xBB      // VCOMS setting
 #define ST7789_LCMCTRL 0xC0    // LCM control
+#define ST7789_IDSET 0xC1      // ID Code Setting
 #define ST7789_VDVVRHEN 0xC2   // VDV and VRH command enable
 #define ST7789_VRHS 0xC3       // VRH set
 #define ST7789_VDVSET 0xC4     // VDV setting
+#define ST7789_VCMOFSET 0xC5     // VCOMS offset setting
 #define ST7789_FRCTR2 0xC6     // FR Control 2
 #define ST7789_PWCTRL1 0xD0    // Power control 1
+#define ST7789_RDID1 0xDA      // read LCD panel ID1 ?
+#define ST7789_RDID2 0xDB      // read LCD panel ID2 ?
+#define ST7789_RDID3 0xDC      // read LCD panel ID3 ?
 #define ST7789_PVGAMCTRL 0xE0  // Positive voltage gamma control
 #define ST7789_NVGAMCTRL 0xE1  // Negative voltage gamma control
 
@@ -48,15 +71,18 @@
 #endif
 
 u16 BACK_COLOR;        // Background color
-int lcd_disabled = 0;  // Device has failed. Quit trying.
-int cursor_x;
+
+int cursor_x; // Current text cursor.
 int cursor_y;
+
 // Arbitrary max tries before declaring LCD dead.
 // In practice, I've not seen it be > 1.
 #define MAX_TRIES 1000
+int lcd_disabled = 0;  // Device has failed. Quit trying.
 
 u16 colstart = 52;
 u16 rowstart = 40;
+// The hardware is 80x160px. Why these crazy numbers?
 u16 init_height_ = 240;
 u16 init_width_ = 135;
 u16 width_ = 135;
@@ -149,6 +175,7 @@ void LCD_WriteReg_(u8 dat) {
                    y1, y2 set the start and end addresses of the line
        Return value: None
 ******************************************************************************/
+#if 0
 void LCD_SetAddress_(u16 x1, u16 y1, u16 x2, u16 y2) {
   if (USE_HORIZONTAL == 0) {
     LCD_WriteReg_(ST7789_CASET);  // Column address settings
@@ -184,6 +211,32 @@ void LCD_SetAddress_(u16 x1, u16 y1, u16 x2, u16 y2) {
     LCD_WriteReg_(ST7789_RAMWR);  // Memory write
   }
 }
+#else
+void LCD_SetAddress_(u16 x1, u16 y1, u16 x2, u16 y2) {
+    uint16_t x_start = x1 + colstart, x_end = x2 + colstart;
+    uint16_t y_start = y1 + rowstart, y_end = y2 + rowstart;
+
+    LCD_WriteReg_(ST7789_CASET);  // Column address settings
+#if 1
+    LCD_WriteData16_(x1 + 1); 
+    LCD_WriteData16_(x2 + 1);
+#else
+// THESE SHOULD NOT BE THE SAME
+    LCD_WriteData16_(x1 + colstart); // XSTART
+    LCD_WriteData16_(x2 + colstart); // XEND
+#endif
+    LCD_WriteReg_(ST7789_RASET);  // Row address setting
+#if 1
+    LCD_WriteData16_(y1 + 26);
+    LCD_WriteData16_(y2 + 26);
+#else 
+// THESE SHOULD NOT BE THE SAME
+    LCD_WriteData16_(y1 + rowstart); // YSTART
+    LCD_WriteData16_(y2 + rowstart); // YEND
+#endif
+    LCD_WriteReg_(ST7789_RAMWR);  // Memory write
+}
+#endif
 
 #if SPI0_CFG == 2
 /*!
@@ -247,7 +300,7 @@ void LCD_SetRotation_(uint8_t m) {
   rotation_ = m % 4;
   LCD_WriteReg_(ST7789_MADCTL);
   switch (rotation_) {
-    case 0:
+    case 0: // Portrait
       colstart = 52;
       rowstart = 40;
       width_ = init_width_;
@@ -255,21 +308,21 @@ void LCD_SetRotation_(uint8_t m) {
       LCD_WriteData8_(TFT_MAD_COLOR_ORDER);
       break;
 
-    case 1:
+    case 1: // landscap3
       colstart = 40;
       rowstart = 53;
       width_ = init_height_;
       height_ = init_width_;
       LCD_WriteData8_(TFT_MAD_MX | TFT_MAD_MV | TFT_MAD_COLOR_ORDER);
       break;
-    case 2:
+    case 2: // upside down portrait
       colstart = 52;
       rowstart = 40;
       width_ = init_width_;
       height_ = init_height_;
       LCD_WriteData8_(TFT_MAD_MX | TFT_MAD_MY | TFT_MAD_COLOR_ORDER);
       break;
-    case 3:
+    case 3: // upside down landscape
       colstart = 40;
       rowstart = 52;
       width_ = init_height_;
@@ -293,16 +346,16 @@ void LCD_SetRotation_(uint8_t m) {
 static LCD_InitPanel_() {
   static const uint8_t init_sequence[] = {
       ST7789_INVON, 0xff,  // display inversion
-      0xb1, 0x05, 0x3a, 0x3a, 0xff,  // frame freq, color: RTNA + FPA + BNA
+      ST7789_RGBCTRL, 0x05, 0x3a, 0x3a, 0xff,  // frame freq, color: RTNA + FPA + BNA
       ST7789_PORCTRL, 0x05, 0x3a, 0x3a, 0xff,  // frame freq, idle: RTNB + FPB + BPB
-      0xb3, 0x05, 0x3a, 0x3a, 0x05, 0x3a, 0x3a, 0xff,  // ff: partial
+      ST7789_FRCTRL1, 0x05, 0x3a, 0x3a, 0x05, 0x3a, 0x3a, 0xff,  // ff: partial
       0xb4, 0x03, 0xff,
       ST7789_LCMCTRL, 0x62, 0x02, 0x04, 0xff,
-      0xc1, 0xc0, 0xff,
+      ST7789_IDSET, 0xc0, 0xff,
       ST7789_VDVVRHEN, 0x0d, 0x00, 0xff,
       ST7789_VRHS, 0x8d, 0x6a, 0xff,
       ST7789_VDVSET, 0x8d, 0xee, 0xff,
-      0xc5, 0x0e, 0xff,  // VCCOM
+      ST7789_VCMOFSET, 0x0e, 0xff,  // VCCOM
       ST7789_PVGAMCTRL, 0x10, 0x0e, 0x02, 0x03, 0x0e, 0x07, 0x02,
           0x07, 0x0a, 0x12, 0x27, 0x37, 0x00, 0x0d, 0x0e, 0x10, 0xff,
       ST7789_NVGAMCTRL, 0x10, 0x0e, 0x03, 0x03, 0x0f, 0x06, 0x02,
@@ -313,6 +366,9 @@ static LCD_InitPanel_() {
       ST7789_SLPOUT, 0xff,  // Turn off sleep mode
       0xff };
 
+  LCD_WriteReg_(ST7789_SWRESET);
+  delay_1ms(150);
+
   // Initialize the display.
   for (const uint8_t *p = init_sequence; *p != 0xff; p++) {
     LCD_WriteReg_(*p++);
@@ -320,6 +376,7 @@ static LCD_InitPanel_() {
     spi_wait_idle();
     lcd_mode_data();
     while (*p != 0xff) LCD_WriteData8_(*p++);
+    delay_1ms(10); // Not strictly required for every command above.
   }
 }
 
@@ -384,8 +441,8 @@ void LCD_Init(void) {
   delay_1ms(20);
   OLED_BLK_Set();
 
-  LCD_InitPanel_();
   LCD_SetRotation_(1);
+  LCD_InitPanel_();
   cursor_x = 0;
   cursor_y = 0;
 }
@@ -665,9 +722,9 @@ void LCD_Erase() {
 }
 
 void LCD_ClearToEol() {
-  while (cursor_x++ < 320 / 8) {
-    LCD_Putc(' ', GREEN);
-    cursor_x += 8;
+  while (cursor_x < (width_ / 8)) {
+    LCD_Putc('X', RED);
+//    cursor_x += 8;
   }
   cursor_x = 0;
 }
@@ -750,7 +807,6 @@ void LCD_ShowPicture(u16 x1, u16 y1, u16 x2, u16 y2) {
   int i;
   LCD_SetAddress_(x1, y1, x2, y2);
   for (i = 0; i < 12800; i++) {
-    // LCD_WriteData8_(image[i*2+1]);
     LCD_WriteData8_(image[i]);
   }
 }
