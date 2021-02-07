@@ -2,7 +2,7 @@
 
 /*	find	COMPILE:	cc -o find -s -O -i find.c -lS	*/
 
-#include <math.h>
+// #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -37,6 +37,8 @@ long	Newer;
 
 struct stat Statb;
 
+// RISC-V note: exp collides with math function, so rename it.
+#define exp exp0
 struct	anode	*exp(),
 		*e1(),
 		*e2(),
@@ -151,7 +153,9 @@ struct anode *e3() { /* parse parens and predicates */
 		type(), ino(), cpio(), newer();
 	struct anode *p1;
 	int i;
-	register char *a, *b, s;
+	// RISC-V note: s was a char, which makes ANSI compilers very unhappy.
+	register char *a, *b;
+ 	int s;
 
 	a = nxtarg();
 	if(EQ(a, "(")) {
