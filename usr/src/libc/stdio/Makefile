@@ -9,4 +9,4 @@ objs: \
 	popen.o printf.o putchar.o puts.o putw.o rdwr.o rew.o \
 	scanf.o setbuf.o sprintf.o strout.o system.o ungetc.o vsnprintf.o \
 
-
+-include *.d

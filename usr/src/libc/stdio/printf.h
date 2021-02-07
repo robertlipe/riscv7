@@ -35,6 +35,7 @@
 #include <stdarg.h>
 #include <stddef.h>
 
+#define PRINTF_DISABLE_SUPPORT_FLOAT 1
 
 #ifdef __cplusplus
 extern "C" {
@@ -68,7 +69,8 @@ int printf_(const char* format, ...);
  * \param format A string that specifies the format of the output
  * \return The number of characters that are WRITTEN into the buffer, not counting the terminating null character
  */
-#define sprintf sprintf_
+// #define sprintf sprintf_
+#define sprintf_ sprintf
 int sprintf_(char* buffer, const char* format, ...);
 
 
@@ -112,6 +114,5 @@ int fctprintf(void (*out)(char character, void* arg), void* arg, const char* for
 #ifdef __cplusplus
 }
 #endif
-
 
 #endif  // _PRINTF_H_
