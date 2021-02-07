@@ -5,7 +5,6 @@
  */
 
 #define	BSIZE	512
-#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
