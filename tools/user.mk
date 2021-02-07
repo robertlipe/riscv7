@@ -1,11 +1,14 @@
-#CFLAGS += 
-#   -L../libc -lc 
+CFLAGS += -nostdlib  -nostdinc -I../../include
+LIBC := -nostdlib -L../libc -lc
 LD = $(PREFIX)ld
-LDFLAGS=-melf32lriscv
+STARTUP=../libc/csu/crt0.o
+XLDFLAGS=-melf32lriscv
+
+# LDFLAGS = -L../libc -lc
 # LDFLAGS = -nostartfiles -nodefaultlibs -march=rv32imac -mabi=ilp32 # -L../libc -lc
 
-# yeah, this is bad...
+# Even when we're calling the linker, do it through the compiler driver.
 %: %.o
-	$(LD) $(LDFLAGS) $(STARTUP) $^  \
-	-L../libc \
-	-lc -L/usr/local/Cellar/riscv-gnu-toolchain/master/lib/gcc/riscv64-unknown-elf/10.2.0/rv32i/ilp32/ -lgcc -o $@
+	$(CC) $(CFLAGS) -o $@ $^ $(LIBC) -lgcc # link
+%: %.c
+	$(CC) $(CFLAGS) -o $@ $^ $(LIBC) -lgcc # compile

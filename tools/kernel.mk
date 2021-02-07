@@ -21,10 +21,6 @@ CFLAGS += \
     -fno-function-sections \
     -fno-data-sections
 
-# CFLAGS=-g -Os -DNCPU=2
-
-#LD=/Applications/SEGGER\ Embedded\ Studio\ for\ RISC-V\ 5.10b/gcc/riscv32-none-elf/bin/ld
-#LD=/Applications/SEGGER\ Embedded\ Studio\ for\ RISC-V\ 4.52c/gcc/riscv32-none-elf/bin/ld
 
 # LDFLAGS += -Wl,--gc-sections -nostartfiles -nodefaultlibs -nodefaultlibs -z muldefs -march=rv32imac -mabi=ilp32
 LDFLAGS += -Wl,--gc-sections -nostartfiles -nodefaultlibs -march=rv32imac -mabi=ilp32
