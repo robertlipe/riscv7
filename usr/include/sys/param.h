@@ -4,6 +4,7 @@
 /*
  * tunable variables
  */
+#pragma once
 
 #define	NBUF	251		/* size of buffer cache */
 #define	NINODE	200		/* number of in core inodes */
@@ -81,7 +82,7 @@
 #define	NMASK	0177		/* NINDIR-1 */
 #define	NSHIFT	7		/* LOG2(NINDIR) */
 #define	USIZE	2		/* size of user block etc. (*4096) */
-#define	NULL	0
+#define	NULL	((void *)0)
 #define	CMASK	0		/* default mask for file creation */
 #define	NODEV	(dev_t)(-1)
 #define	ROOTINO	((ino_t)2)	/* i number of all roots */

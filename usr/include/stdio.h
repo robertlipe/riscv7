@@ -21,7 +21,8 @@ extern	struct	_iobuf {
 #define	_IOSTRG	0100
 #define	_IORW	0200
 
-#define	NULL	0
+//#define	NULL	0
+#define NULL ((void *)0)
 #define	FILE	struct _iobuf
 #define	EOF	(-1)
 
