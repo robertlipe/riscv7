@@ -40,6 +40,9 @@ int	peek	= -1;
 int	tabs	= 0;
 int	lastchar;
 int	c;
+
+#define puts my_puts
+
 main(argc,argv) int argc;
 char argv[];
 {
