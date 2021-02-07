@@ -1,6 +1,7 @@
 /* UNIX V7 source code: see /COPYRIGHT or www.tuhs.org for details. */
 
 # include <stdio.h>
+# include <stdlib.h>
 
 #
 #define NIL (-1)
@@ -56,7 +57,7 @@ whitesmv:
 	if(piececount(white,0,24)==0){
 	    printf( "White wins\n");
 	    printf( "Aren't you ashamed. You've been beaten by a computer.\n");
-	    exit();
+	    exit(0);
 	}
 nowhmove:
 	prtbrd();
@@ -93,7 +94,7 @@ retry:
 	if(piececount(red,0,24)==0){
 	    printf( "Red wins.\n");
 	    printf( "Congratulations! You have just defeated a dumb machine.\n");
-	    exit();
+	    exit(0);
 	}
 	goto whitesmv;
 }

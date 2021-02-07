@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <stdlib.h>
+#include <string.h>
 #define DICT "/usr/dict/words"
 #define EDICT "/crp/dict/web2"
 #define MAXERR 7

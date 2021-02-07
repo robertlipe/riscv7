@@ -1,6 +1,6 @@
 /* UNIX V7 source code: see /COPYRIGHT or www.tuhs.org for details. */
 
-#
+#include <stdio.h>
 
 /*
  *	wumpus
@@ -316,7 +316,7 @@ rline()
 	r = c;
 	while(c != '\n' && c != ' ') {
 		if(c == '\0')
-			exit();
+			exit(0);
 		c = getchar();
 	}
 	tchar = c;
@@ -344,7 +344,7 @@ rin()
 		if(c<'0' || c>'9') {
 			while(c != '\n') {
 				if(c == 0)
-					exit();
+					exit(0);
 				c = getchar();
 			}
 			return(0);

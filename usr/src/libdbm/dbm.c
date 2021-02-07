@@ -3,6 +3,9 @@
 #include	"dbm.h"
 #include	<sys/types.h>
 #include	<sys/stat.h>
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 dbminit(file)
 char *file;
