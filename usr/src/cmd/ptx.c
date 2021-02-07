@@ -67,6 +67,8 @@ FILE *sortptr;
 char *bfile;	/*contains user supplied break chars */
 FILE *bptr;
 
+char *getline();
+
 main(argc,argv)
 int argc;
 char **argv;
