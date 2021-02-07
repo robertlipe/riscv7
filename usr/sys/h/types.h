@@ -1,6 +1,8 @@
 /* UNIX V7 source code: see /COPYRIGHT or www.tuhs.org for details. */
 /* Changes: Copyright (c) 1999 Robert Nordier. All rights reserved. */
 
+#pragma once
+
 typedef	long       	daddr_t;  	/* disk address */
 typedef	char *     	caddr_t;  	/* core address */
 typedef	unsigned short	ino_t;     	/* i-node number */

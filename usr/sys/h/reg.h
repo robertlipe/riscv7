@@ -1,6 +1,9 @@
 /* UNIX V7 source code: see /COPYRIGHT or www.tuhs.org for details. */
 /* Changes: Copyright (c) 1999 Robert Nordier. All rights reserved. */
 
+#pragma once
+
+#if 1
 /*
  * Location of the users' stored
  * registers relative to R0 (EAX for the x86).
@@ -38,3 +41,5 @@ struct trap {
     int esp;
     int ss;
 };
+#else
+#endif

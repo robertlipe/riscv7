@@ -1,5 +1,7 @@
 /* UNIX V7 source code: see /COPYRIGHT or www.tuhs.org for details. */
 
+#pragma once
+
 /*
  * One structure allocated per active
  * process. It contains all data needed

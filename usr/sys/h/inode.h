@@ -12,6 +12,8 @@
  * from permanent inode on volume.
  */
 
+#pragma once
+
 #define	NADDR	13
 #define	NINDEX	15
 

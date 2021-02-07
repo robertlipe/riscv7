@@ -1,6 +1,8 @@
 /* UNIX V7 source code: see /COPYRIGHT or www.tuhs.org for details. */
 /* Changes: Copyright (c) 1999 Robert Nordier. All rights reserved. */
 
+#pragma once
+
 /*
  * tunable variables
  */
@@ -136,7 +138,7 @@
 
 /* make a device number */
 #define	makedev(x,y)	(dev_t)((x)<<8 | (y))
-
+#if 0
 // From FreeBSD. This is probably a bad place for this...
 typedef long long __register_t;
 struct gpregs {
@@ -150,12 +152,15 @@ struct gpregs {
 	__register_t	gp_sepc;
 	__register_t	gp_sstatus;
 };
+#endif
 
 typedef	struct { int r[1]; } *	physadr;
 typedef	long		daddr_t;
 typedef char *		caddr_t;
 typedef	unsigned short	ino_t;
-//typedef	long		time_t;
+////typedef	long		time_t;
+// typedef	_TIME_T_ time_t;
+#define  _TIME_T_DECLARED 1
 typedef unsigned long long	 time_t;    /* a time */
 typedef	long		label_t[32];	/* RISC-V has 32 registers */
 //typedef struct gpregs		label_t;
