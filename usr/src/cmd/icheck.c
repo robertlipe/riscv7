@@ -44,9 +44,6 @@ int	nerror;
 
 long	atol();
 daddr_t	alloc();
-#ifndef STANDALONE
-char	*malloc();
-#endif
 
 main(argc, argv)
 char *argv[];
