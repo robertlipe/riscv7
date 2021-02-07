@@ -4,15 +4,16 @@
 */
 #define CHARPERINT (sizeof(int)/sizeof(char))
 #include <stddef.h>
-// Intentionall don't do this because this cfree() predates ANSI convention
-// #include <stdlib.h>
+// Intentionaly don't do this because this cfree() predates ANSI convention
+#include <stdlib.h>
+#include <stddef.h>
 
-char *
+void*
 calloc(num, size)
-unsigned num, size;
+unsigned long num, size;
 {
 	register char *mp;
-	char *malloc();
+	// char *malloc();
 	register int *q;
 	register m;
 

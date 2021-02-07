@@ -1,7 +1,9 @@
-all: cmd libc/libc.a libdbm/libdbm.a libm/libm.a libmp/libmp.a games
+all: cmds libc/libc.a libdbm/libdbm.a libm/libm.a libmp/libmp.a games
+.PHONY all:
 
-cmd:
+cmds: libc/libc.a
 	$(MAKE) -C cmd
+.PHONY: cmds
 
 libc/libc.a:
 	$(MAKE) -C libc
@@ -15,8 +17,8 @@ libdbm/libdbm.a:
 libmp/libmp.a:
 	$(MAKE) -C libmp
 
-# .PHONY games:
-games:
+.PHONY: games
+games: libc/libc.a
 	$(MAKE) -C games
 
 clean:

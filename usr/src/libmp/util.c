@@ -1,6 +1,5 @@
 /* UNIX V7 source code: see /COPYRIGHT or www.tuhs.org for details. */
 
-char *malloc();
 #ifdef lint
 int xv_oid;
 #endif
