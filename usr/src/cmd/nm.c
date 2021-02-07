@@ -32,8 +32,6 @@ struct	exec	exp;
 FILE	*fi;
 long	off;
 long	ftell();
-char	*malloc();
-char	*realloc();
 
 main(argc, argv)
 char **argv;
