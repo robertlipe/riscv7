@@ -8,6 +8,7 @@
 */
 #include <stdio.h>
 #include <time.h>
+struct tm *localtime();
 
 #define DAY (3600*24L)
 
