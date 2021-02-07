@@ -9,14 +9,15 @@
 #include <setjmp.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
+#include <unistd.h>
 
-#define	NULL	0
 #define	FNSIZE	64
 #define	LBSIZE	512
 #define	ESIZE	128
 #define	GBSIZE	256
 #define	NBRA	5
-#define	EOF	-1
+// #define	EOF	-1
 #define	KSIZE	9
 
 #define	CBRA	1
@@ -98,9 +99,7 @@ int	*address();
 char	*getline();
 char	*getblock();
 char	*place();
-char	*mktemp();
-char	*malloc();
-char	*realloc();
+// char	*mktemp();
 jmp_buf	savej;
 
 main(argc, argv)
@@ -1572,8 +1571,8 @@ putd()
 	putchr(r + '0');
 }
 
-puts(sp)
-register char *sp;
+int puts(sp)
+register const char *sp;
 {
 	col = 0;
 	while (*sp)
