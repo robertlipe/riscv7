@@ -221,7 +221,7 @@ void LCD_SetAddress_(u16 x1, u16 y1, u16 x2, u16 y2) {
 
     LCD_WriteReg_(ST7789_CASET);  // Column address settings
 #if 1
-    LCD_WriteData16_(x1 + 1); 
+    LCD_WriteData16_(x1 + 1);
     LCD_WriteData16_(x2 + 1);
 #else
 // THESE SHOULD NOT BE THE SAME
@@ -232,7 +232,7 @@ void LCD_SetAddress_(u16 x1, u16 y1, u16 x2, u16 y2) {
 #if 1
     LCD_WriteData16_(y1 + 26);
     LCD_WriteData16_(y2 + 26);
-#else 
+#else
 // THESE SHOULD NOT BE THE SAME
     LCD_WriteData16_(y1 + rowstart); // YSTART
     LCD_WriteData16_(y2 + rowstart); // YEND
@@ -470,7 +470,7 @@ void LCD_Clear(u16 Color) {
 void LCD_SetDisplayPower(int state) {
   if (state) {
          OLED_BLK_Set();
-         LCD_WriteReg_( ST7789_DISPON);
+         LCD_WriteReg_(ST7789_DISPON);
   } else {
          OLED_BLK_Clr();
          LCD_WriteReg_(ST7789_DISPOFF);
@@ -723,6 +723,12 @@ void LCD_Putc(char cdata, u16 color) {
   if (LCD_blanked) {
     LCD_SetDisplayPower(1);
   }
+// These should come from h/system and parm. The SHOULD be run
+// from a "real" driver that does a skeep and schedules a wekaup
+// that keeps gettting canceled and rescheduled.
+extern int lbolt;
+#define HZ 60
+  LCD_time_to_blank = lbolt + 5*HZ;
 
   if (c == '\n') {
     x = 0;

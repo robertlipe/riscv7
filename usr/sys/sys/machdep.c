@@ -79,12 +79,24 @@ __attribute__( ( interrupt ) )
 void eclic_mtip_handler( void ) {
   // Increment the global 'tick' value.
   systick++;
-led_red(systick & 0x800);
-led_green(systick & 0x1000);
-led_blue(systick & 0x0400);
-  // Reset the 'mtime' value to zero.
-clock(NULL);
+// logic inverted so GREEN lights quickly after boot.
+  led_red(!(systick & 0x80));
+  led_green(systick & 0x100);
+  led_blue(systick & 0x040);
+
+  clock(NULL);
+  // Reset the 'mtime' value to zero. *This probably drifts.
   *( volatile uint64_t * )( TIMER_CTRL_ADDR + TIMER_MTIME ) = 0;
+
+  // Visually pleasing, but makes a LOT of disruptive DMA and SPI traffic.
+  // LCD_DrawPoint (systick % 160 ,0 ,systick *8);
+
+  extern unsigned long LCD_time_to_blank;
+  extern int LCD_blanked;
+  if (systick > LCD_time_to_blank) {
+       LCD_SetDisplayPower(0);
+       LCD_blanked = 1;
+  }
 }
 
 int
