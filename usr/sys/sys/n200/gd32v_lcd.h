@@ -95,7 +95,7 @@ static void LCD_WriteData16_(u16 dat);
 static void LCD_WriteReg_(u8 dat);
 static void LCD_SetAddress_(u16 x1, u16 y1, u16 x2, u16 y2);
 
-void Lcd_Init(void);
+void LCD_Init(void);
 void LCD_Clear(u16 Color);
 void LCD_ShowChinese(u16 x, u16 y, u8 index, u8 size, u16 color);
 void LCD_DrawPoint(u16 x, u16 y, u16 color);

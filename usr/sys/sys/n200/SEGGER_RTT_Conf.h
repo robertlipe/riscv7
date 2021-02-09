@@ -58,9 +58,9 @@ Revision: $Rev: 18601 $
 #endif
 
 // Start RJL
-#define SEGGER_RTT_MEMCPY_USE_BYTELOOP 1
-#define MEMCPY __builtin_memcpy
-#define STRLEN __builtin_strlen
+//#define SEGGER_RTT_MEMCPY_USE_BYTELOOP 1
+//#define MEMCPY __builtin_memcpy
+//#define STRLEN __builtin_strlen
 // END RJL
 
 /*********************************************************************
