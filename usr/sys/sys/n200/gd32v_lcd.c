@@ -28,9 +28,9 @@
 #define ST7789_DISPOFF 0x28
 #define ST7789_DISPON 0x29
 #define ST7789_VSCRDEF 0x33 // Verticjal scrolling def?
-#define ST7789_VSCRDEF 0x37 // Vertial scrolling start of RAM?
+#define ST7789_VSCRSADDR 0x37 // Vertial scrolling start of RAM?
 #define ST7789_IDMOFF 0x38 // Idle Mode Off?
-#define ST7789_IDMOFF 0x39 // Idle Mode on?
+#define ST7789_IDMON 0x39 // Idle Mode on?
 
 #define TFT_MAD_COLOR_ORDER TFT_MAD_RGB
 #define TFT_MAD_MY 0x80
@@ -77,7 +77,7 @@ int cursor_y;
 
 // Arbitrary max tries before declaring LCD dead.
 // In practice, I've not seen it be > 1.
-#define MAX_TRIES 1000
+#define MAX_TRIES 10
 int lcd_disabled = 0;  // Device has failed. Quit trying.
 
 u16 colstart = 52;
@@ -88,6 +88,9 @@ u16 init_width_ = 135;
 u16 width_ = 135;
 u16 height_ = 240;
 u8 rotation_ = 0;
+
+static void LCD_SetVerticalScrollArea(int tfa, int bfa);
+static void LCD_VerticalScroll(unsigned lines);
 
 /******************************************************************************
        Function description: LCD serial data write function
@@ -218,7 +221,7 @@ void LCD_SetAddress_(u16 x1, u16 y1, u16 x2, u16 y2) {
 
     LCD_WriteReg_(ST7789_CASET);  // Column address settings
 #if 1
-    LCD_WriteData16_(x1 + 1); 
+    LCD_WriteData16_(x1 + 1);
     LCD_WriteData16_(x2 + 1);
 #else
 // THESE SHOULD NOT BE THE SAME
@@ -229,7 +232,7 @@ void LCD_SetAddress_(u16 x1, u16 y1, u16 x2, u16 y2) {
 #if 1
     LCD_WriteData16_(y1 + 26);
     LCD_WriteData16_(y2 + 26);
-#else 
+#else
 // THESE SHOULD NOT BE THE SAME
     LCD_WriteData16_(y1 + rowstart); // YSTART
     LCD_WriteData16_(y2 + rowstart); // YEND
@@ -308,21 +311,21 @@ void LCD_SetRotation_(uint8_t m) {
       LCD_WriteData8_(TFT_MAD_COLOR_ORDER);
       break;
 
-    case 1: // landscap3
+    case 1: // Landscape
       colstart = 40;
       rowstart = 53;
       width_ = init_height_;
       height_ = init_width_;
       LCD_WriteData8_(TFT_MAD_MX | TFT_MAD_MV | TFT_MAD_COLOR_ORDER);
       break;
-    case 2: // upside down portrait
+    case 2: // Upside down portrait
       colstart = 52;
       rowstart = 40;
       width_ = init_width_;
       height_ = init_height_;
       LCD_WriteData8_(TFT_MAD_MX | TFT_MAD_MY | TFT_MAD_COLOR_ORDER);
       break;
-    case 3: // upside down landscape
+    case 3: // Upside down landscape
       colstart = 40;
       rowstart = 52;
       width_ = init_height_;
@@ -330,6 +333,7 @@ void LCD_SetRotation_(uint8_t m) {
       LCD_WriteData8_(TFT_MAD_MV | TFT_MAD_MY | TFT_MAD_COLOR_ORDER);
       break;
   }
+  LCD_SetVerticalScrollArea(rowstart, rowstart);
 }
 
 #define spi_wait_idle()                     \
@@ -387,6 +391,7 @@ static LCD_InitPanel_() {
 ******************************************************************************/
 void LCD_Init(void) {
   lcd_disabled = 0;
+
   rcu_periph_clock_enable(RCU_GPIOA);
   rcu_periph_clock_enable(RCU_GPIOB);
 
@@ -459,6 +464,26 @@ void LCD_Clear(u16 Color) {
     for (j = 0; j < height_; j++) {
       LCD_WriteData16_(Color);
     }
+  }
+}
+
+void LCD_SetDisplayPower(int state) {
+  if (state) {
+         OLED_BLK_Set();
+         LCD_WriteReg_(ST7789_DISPON);
+  } else {
+         OLED_BLK_Clr();
+         LCD_WriteReg_(ST7789_DISPOFF);
+  }
+}
+
+// Called from debugger to generate text for scroll events. $(gdb) p words(15)
+void words(int x) {
+  static wct;
+  while (x>0) {
+    printf("word %d.", wct++);
+    SEGGER_RTT_WriteString(0, "Hello World from SEGGER!\r\n");
+    x--;
   }
 }
 
@@ -661,6 +686,7 @@ void LCD_ShowChar(u16 x, u16 y, u8 num, u8 mode, u16 color) {
   }
 }
 
+#if NOTUSED
 /******************************************************************************
            Function description: display string
        Entry data: x, y starting point coordinates
@@ -684,10 +710,26 @@ void LCD_ShowString(u16 x, u16 y, const u8 *p, u16 color) {
     p++;
   }
 }
+#endif // NOTUSED
 
-void LCD_Putc(char c, u16 color) {
+unsigned long LCD_time_to_blank = 0;
+int LCD_blanked = 0;
+
+void LCD_Putc(char cdata, u16 color) {
   int x = cursor_x;
   int y = cursor_y;
+  int c = cdata & 0xff; // Smuggle attributes in high bits of chars.
+
+  if (LCD_blanked) {
+    LCD_SetDisplayPower(1);
+  }
+// These should come from h/system and parm. The SHOULD be run
+// from a "real" driver that does a skeep and schedules a wekaup
+// that keeps gettting canceled and rescheduled.
+extern int lbolt;
+#define HZ 60
+  LCD_time_to_blank = lbolt + 60 * HZ;
+
   if (c == '\n') {
     x = 0;
     y += 16;
@@ -729,8 +771,19 @@ void LCD_ClearToEol() {
   cursor_x = 0;
 }
 
+void LCD_SetVerticalScrollArea(int tfa, int bfa) {
+  uint16_t vsa = 320-tfa-bfa; // ST7789 320x240 VRAM
 
-LCD_VerticalScroll(unsigned lines) {
+  LCD_WriteReg_(ST7789_VSCRDEF);  // Define scroll area.
+  LCD_WriteData16_(tfa); // TOP FIXED AREA. from top
+  LCD_WriteData16_(vsa); // Vert. Scrolling area
+  LCD_WriteData16_(bfa); // BOT FIXED AREA. from botom
+}
+
+void LCD_VerticalScroll(unsigned lines) {
+return;
+  LCD_WriteReg_(ST7789_VSCRSADDR);  // Define scroll area.
+  LCD_WriteData16_(lines); // Do the scroll.
   return;
 }
 

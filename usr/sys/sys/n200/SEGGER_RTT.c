@@ -303,6 +303,11 @@ static void _DoInit(void) {
   STRCPY(&p->acID[0], "SEGGER", 7);
   RTT__DMB();
   p->acID[6] = ' ';
+  p->acID[11] = '\0';
+  p->acID[12] = '\0';
+  p->acID[13] = '\0';
+  p->acID[14] = '\0';
+  p->acID[15] = '\0';
   RTT__DMB();
 }
 

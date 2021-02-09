@@ -1,11 +1,9 @@
-
 set confirm off
 # set architecture riscv:rv32
 target extended-remote 127.0.0.1:2331
 set remote memory-write-packet-size 1024
 set remote memory-write-packet-size fixed
 set backtrace limit 32
-monitor speed auto
 
 # set $pc = 0
 set print asm-demangle on
@@ -13,6 +11,11 @@ symbol-file ../md0unix
 file ../md0unix
 # set disassemble-next-line on
 set disassemble-next-line auto
+
+# Configure SEGGER Semihosting. *shouldn't* be harmful if you don't the HW.
+monitor speed auto
+monitor semihosting ioclient 3
+eval "monitor exec SetRTTAddr %p", &_SEGGER_RTT
 
 #break death
 #break panic
@@ -26,11 +29,13 @@ set disassemble-next-line auto
 break panic
 # break main.c:77
 
+# Reload the firmware from scratch over the debugger. Very fast.
 define reload
   load ../md0unix
   reboot
 end
 
+# Restarts the firmware from (XIP) Flash. A warm boot.
 define reboot
   set $pc = 0
   cont
