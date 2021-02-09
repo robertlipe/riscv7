@@ -728,7 +728,7 @@ void LCD_Putc(char cdata, u16 color) {
 // that keeps gettting canceled and rescheduled.
 extern int lbolt;
 #define HZ 60
-  LCD_time_to_blank = lbolt + 5*HZ;
+  LCD_time_to_blank = lbolt + 60 * HZ;
 
   if (c == '\n') {
     x = 0;

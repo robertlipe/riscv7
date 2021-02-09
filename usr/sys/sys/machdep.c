@@ -80,9 +80,9 @@ void eclic_mtip_handler( void ) {
   // Increment the global 'tick' value.
   systick++;
 // logic inverted so GREEN lights quickly after boot.
-  led_red(!(systick & 0x80));
-  led_green(systick & 0x100);
-  led_blue(systick & 0x040);
+  led_green(!(systick & 0x80));
+  led_blue(systick & 0x100);
+  led_red(systick & 0x040);
 
   clock(NULL);
   // Reset the 'mtime' value to zero. *This probably drifts.
