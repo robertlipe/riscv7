@@ -2,6 +2,7 @@
   ENTRY(dup)
   li a7, 41
   ecall
+  SET_ERRNO
   ret
   END(dup)
 
@@ -9,5 +10,6 @@
   ENTRY(dup2)
   li a7, 99
   ecall
+  SET_ERRNO
   ret
   END(dup2)

@@ -1,4 +1,6 @@
-#include "../../../sys/h/riscv-asm.h"  .global _exit
+#include "../../../sys/h/riscv-asm.h"  
+.global _exit
+_exit:
   ENTRY(exit)
   li a7, 1
   ecall

@@ -2,5 +2,6 @@
   ENTRY(stat)
   li a7, 18
   ecall
+  SET_ERRNO
   ret
   END(stat)

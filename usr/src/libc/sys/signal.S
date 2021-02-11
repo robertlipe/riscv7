@@ -3,5 +3,6 @@
 ENTRY(signal)
   li a7, 99
   ecall
+  SET_ERRNO
   ret
 END(signal)

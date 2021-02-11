@@ -3,5 +3,6 @@
   ENTRY(Xmpxcall)
   li a7, 56
   ecall
+  SET_ERRNO
   ret
   END(Xmpxcall)

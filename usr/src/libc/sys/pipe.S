@@ -2,5 +2,6 @@
   ENTRY(pipe)
   li a7, 42
   ecall
+  SET_ERRNO
   ret
   END(pipe)

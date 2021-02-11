@@ -2,5 +2,6 @@
   ENTRY(wait)
   li a7, 7
   ecall
+  SET_ERRNO
   ret
   END(wait)

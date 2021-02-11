@@ -3,5 +3,6 @@
 ENTRY(fork)
   li a7, 99
   ecall
+  SET_ERRNO
   ret
 END(fork)

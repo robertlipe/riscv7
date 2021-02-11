@@ -20,9 +20,19 @@
 // and string continuing, our line numbers never go up so you can't branch to
 // '1f:' when you're o the same line. Fortunately '\@' is exactly the ticket.
 
-#define SET_ERRNO \
-	beqz a0, \@f ; \
+.macro SET_ERRNO
+ .comm __errno, 4
+#	beqz a0, TL\@
+	beqz a0, 1f
+	la	a1, __errno
+	sw	a1, (a1)
+	li 	a0, -1
+1:	
+.endm
+
+#define xSET_ERRNO \
+	beqz a0, FL\@ ;  \
 	la	a1, _errno; \
 	sw	a1, (a1); \
-	li 	a0, -1;
-\@f:	ret
+	li 	a0, -1; \
+FL\@:	ret

@@ -2,5 +2,6 @@
   ENTRY(phys)
   li a7, 52
   ecall
+  SET_ERRNO
   ret
   END(phys)
