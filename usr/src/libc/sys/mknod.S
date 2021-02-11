@@ -1,7 +1,6 @@
-  .global _mknod
-  .global mknod
-  _mknod:
-  mknod:
+#include "../../../sys/h/riscv-asm.h"
+ENTRY(mknod)
   li a7, 14
   ecall
   ret
+END(mknod)

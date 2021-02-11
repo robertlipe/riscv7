@@ -1,7 +1,6 @@
-  .global _mount
-  .global mount
-  _mount:
-  mount:
+#include "../../../sys/h/riscv-asm.h"
+ENTRY(mount)
   li a7, 21
   ecall
   ret
+END(mount)

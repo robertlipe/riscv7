@@ -1,7 +1,6 @@
-  .global _ioctl
-  .global ioctl
-  _ioctl:
-  ioctl:
+#include "../../../sys/h/riscv-asm.h"
+  ENTRY(ioctl)
   li a7, 54
   ecall
   ret
+  END(ioctl)

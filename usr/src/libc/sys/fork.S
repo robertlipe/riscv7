@@ -1,7 +1,7 @@
+#include "../../../sys/h/riscv-asm.h"
 #  FIXME: this is a placeholder
-.global fork
-fork:
+ENTRY(fork)
   li a7, 99
   ecall
   ret
-
+END(fork)

@@ -1,7 +1,6 @@
-  .global _open
-  .global open
-  _open:
-  open:
+  #include "../../../sys/h/riscv-asm.h"
+  ENTRY(open)
   li a7, 5
   ecall
   ret
+  END(open)

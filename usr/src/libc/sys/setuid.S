@@ -1,7 +1,6 @@
-  .global _setuid
-  .global setuid
-  _setuid:
-  setuid:
+#include "../../../sys/h/riscv-asm.h"
+  ENTRY(setuid)
   li a7, 23
   ecall
   ret
+  END(setuid)

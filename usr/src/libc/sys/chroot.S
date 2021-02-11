@@ -1,7 +1,6 @@
-  .global _chroot
-  .global chroot
-  _chroot:
-  chroot:
+#include "../../../sys/h/riscv-asm.h"
+  ENTRY(chroot)
   li a7, 61
   ecall
   ret
+  END(chroot)

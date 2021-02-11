@@ -1,7 +1,6 @@
-  .global _lock
-  .global lock
-  _lock:
-  lock:
+#include "../../../sys/h/riscv-asm.h"
+ENTRY(lock)
   li a7, 53
   ecall
   ret
+END(lock)

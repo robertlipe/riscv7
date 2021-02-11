@@ -1,14 +1,13 @@
-  .global _dup
-  .global dup
-  _dup:
-  dup:
+#include "../../../sys/h/riscv-asm.h"
+  ENTRY(dup)
   li a7, 41
   ecall
   ret
+  END(dup)
 
 #  FIXME: this is a placeholder
-.global dup2
-dup2:
+  ENTRY(dup2)
   li a7, 99
   ecall
   ret
+  END(dup2)

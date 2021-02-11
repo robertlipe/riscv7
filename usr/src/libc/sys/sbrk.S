@@ -1,7 +1,6 @@
-  .global _sbrk
-  .global sbrk
-  _sbrk:
-  sbrk:
+#include "../../../sys/h/riscv-asm.h"
+  ENTRY(sbrk)
   li a7, 17
   ecall
   ret
+  END(sbrk)

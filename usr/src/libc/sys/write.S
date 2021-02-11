@@ -1,7 +1,6 @@
-  .global _write
-  .global write
-  _write:
-  write:
+#include "../../../sys/h/riscv-asm.h"
+ENTRY(write)
   li a7, 4
   ecall
   ret
+END(write)
