@@ -4,9 +4,10 @@
 # C return sequence which
 # sets errno, returns -1.
 
-.globl	cerror, _errno
-.comm	_errno,4
+.globl  errno
+.comm	errno,4
 
+.globl	cerror
 cerror:
 	#lw a0, -1
 	#break 1234;
