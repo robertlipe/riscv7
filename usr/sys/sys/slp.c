@@ -215,12 +215,6 @@ sched (void)
 	 */
 
 	KASSERT(lbolt >= 0, "timer expected to run, but isn't");
-#if 0
-printf("Locking up in sched");
-while(1) {
-   LCD_ShowNum(0,0,lbolt,10,0xffff/*white*/);
-}
-#endif
 loop:
 	spl6();
 	outage = -20000;
