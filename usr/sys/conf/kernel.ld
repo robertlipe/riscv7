@@ -3,9 +3,9 @@ OUTPUT_ARCH( "riscv" )
 ENTRY( reset_handler )
 
 MEMORY
-{ 
+{
   FLASH (rx)  : ORIGIN = 0x08000000, LENGTH = 128K
-  RAM   (rwx) : ORIGIN = 0x20000000, LENGTH = 32K 
+  RAM   (rwx) : ORIGIN = 0x20000000, LENGTH = 32K
 /* Consider
   FLASH (rxai!w) : ORIGIN = 0x00000000, LENGTH = 128K
   RAM (wxa!ri) : ORIGIN = 0x20000000, LENGTH = 32K
@@ -26,15 +26,13 @@ SECTIONS
   .text :
   {
     *(.text .text.*)
-    *(.rodata .rodata.*)  
+    *(.rodata .rodata.*)
     *(.srodata .srodata.*)
   } >FLASH
 
   . = ALIGN(4);
 
-/*  PROVIDE (__etext = .); */
   PROVIDE (_etext = .);
-/*  PROVIDE (etext = .); */
   PROVIDE( __global_pointer$ = . + (4K / 2) );
 
   _sidata = .;
@@ -43,7 +41,7 @@ SECTIONS
   {
     _END_OF_RAM = . + 32K;
     _sdata = .;
-    *(.rdata) 
+    *(.rdata)
     *(.data .data.*)
     *(.sdata .sdata.*)
     . = ALIGN(4);
@@ -72,8 +70,8 @@ SECTIONS
 
   .stack ORIGIN(RAM) + LENGTH(RAM) - __stack_size :
   {
-    PROVIDE( _heap_end = . ); 
-    . = __stack_size;  
-    PROVIDE( _sp = . ); 
+    PROVIDE( _heap_end = . );
+    . = __stack_size;
+    PROVIDE( _sp = . );
   } >RAM
 }
