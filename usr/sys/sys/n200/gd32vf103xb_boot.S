@@ -1,4 +1,5 @@
 #include "riscv_encoding.h"
+#include "../../h/riscv-asm.h"
 
 /*
  * Main vector table entries.
@@ -242,9 +243,7 @@ default_interrupt_handler:
 /*
  * Assembly 'reset handler' function to initialize core CPU registers.
  */
-.global reset_handler
-.type reset_handler,@function
-reset_handler:
+ENTRY(reset_handler)
   // Disable interrupts until they are needed.
   csrc CSR_MSTATUS, MSTATUS_MIE
   // Move from 0x00000000 to 0x08000000 address space if necessary.
@@ -269,3 +268,15 @@ reset_handler:
   li   a0, 0
   li   a1, 0
   call main
+  la a0, panic_off_main
+  j	panic
+  # If you've survived falling off the end of main AND panic(), I don't know
+  # what else to do with you...
+1:
+  wfi
+  j	1b
+END(reset_handler)
+
+.data
+panic_off_main:
+.ascii "Fell of end of main!\0"
