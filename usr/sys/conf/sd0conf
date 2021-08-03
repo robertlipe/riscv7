@@ -1,8 +1,8 @@
-hd
+sd
 md
 cd
 serial
-root md 0
-swap md 0
+root sd 56
+swap md 57
 swplo 2880
 nswap 32000

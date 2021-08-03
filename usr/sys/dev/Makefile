@@ -1,3 +1,4 @@
+include ../kernel.mk
 include ../../../tools/common.mk
 include ../../../tools/kernel.mk
 
@@ -15,10 +16,11 @@ OBJS=\
 	pk1.o \
 	pk2.o \
 	pk3.o \
+	sd.o \
 	sc.o \
 	serial.o \
 	sys.o \
-	tty.o 
+	tty.o
 
 
 LIB2.a:	$(OBJS)
@@ -28,5 +30,6 @@ LIB2.a:	$(OBJS)
 
 -include *.d
 
+.PHONY:
 clean:
 	rm -f LIB1.a $(OBJS)

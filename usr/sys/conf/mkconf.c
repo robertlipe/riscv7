@@ -12,17 +12,18 @@
 
 char *tables[] = 
 {
+	// This is a lie. Stack is handled in kernel.ld
 	"\n// entry.S needs one stack per CPU. \
-	\n__attribute__ ((aligned (16))) char _stack0[4096 * NCPU]; \
+	\n//__attribute__ ((aligned (16))) char _stack0[4096 * NCPU]; \
 	\n// scratch for timer interrupt, one per CPU. \
-	\n__attribute__ ((aligned (16))) char mscratch0[32 * NCPU]; \
+	\n//__attribute__ ((aligned (16))) char mscratch0[32 * NCPU]; \
 	\n",
 	0
 };
 
 char	*btab[] =
 {
-	"hd",
+	"sd",
 	"fd",
 	"md",
 	0
@@ -34,7 +35,7 @@ char	*ctab[] =
 	"tty",
 	"sr",
 	"serial",
-	"hd",
+	"sd",
 	"fd",
 	"md",
 	"cd",
@@ -86,12 +87,12 @@ struct tab
 	"",
 	"int	serialopen(), serialclose(), serialread(), serialwrite(), serialioctl();\nstruct	tty	serial[1];",
 
-	"hd",
+	"sd",
 	0, BLOCK+CHAR,
-	"	hdopen,  nulldev, hdstrategy, &hdtab,",
-	"	hdopen, nulldev, hdread, hdwrite, nodev, nulldev, 0,",
-	"int	hdopen(), hdstrategy();\nstruct	buf	hdtab;",
-	"int	hdread(), hdwrite();",
+	"	sdopen,  nulldev, sdstrategy, &sdtab,",
+	"	sdopen, nulldev, sdread, sdwrite, nodev, nulldev, 0,",
+	"int	sdopen(), sdstrategy();\nstruct	buf	sdtab;",
+	"int	sdread(), sdwrite();",
 
 	"fd",
 	0, BLOCK+CHAR,
@@ -361,6 +362,7 @@ input (void)
 	}
 	if (n<2)
 		goto badl;
+	if (keyw[0] == '#') return(1); // Commment: do nothing, but parse more
 	for(q=table; q->name; q++)
 	if(equal(q->name, keyw)) {
 		if(q->count < 0) {

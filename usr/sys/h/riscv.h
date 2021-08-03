@@ -42,6 +42,13 @@ set_mie(unsigned long x)
   asm volatile("csrw mie, %0" : : "r" (x));
 }
 
+static inline unsigned long
+get_mtvec()
+{
+  unsigned long x;
+  asm volatile("csrr %0, mtvec" : "=r" (x) );
+  return x;
+}
 
 // Machine-mode interrupt vector
 static inline void
@@ -49,7 +56,7 @@ set_mtvec(unsigned long x)
 {
   asm volatile("csrw mtvec, %0" : : "r" (x));
 }
-
+#if 1
 static inline unsigned long
 get_sstatus()
 {
@@ -63,6 +70,7 @@ set_sstatus(unsigned long x)
 {
   asm volatile("csrw sstatus, %0" : : "r" (x));
 }
+#endif
 
 // Machine Status Register, mstatus
 
