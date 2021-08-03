@@ -21,9 +21,9 @@ typedef __INT64_TYPE__    int64_t;
 typedef __UINT32_TYPE__   uint32_t;
 typedef __UINT64_TYPE__   uint64_t;
 
-extern int panic(const char* message);
-#define	KASSERT(expression, message) do { \
+extern int panic(const char* message, ...);
+#define	KASSERT(expression, ...) do { \
         if ((!(expression))) {  \
-		panic(message); \
+		panic(__VA_ARGS__); \
         } \
       } while (0)
