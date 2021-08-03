@@ -144,13 +144,20 @@ printptr (long n) {
  * then loops.
  */
 int
-panic (char *s)
+panic (char *fmt, ...)
 {
-	panicstr = s;
+        va_list list;
+        va_start(list, fmt);
+
+	// Less helpful now that panic is variadic.
+	panicstr = fmt;
 //	update();
-	printf("panic: %s\n", s);
-	for(;;)
-		idle();
+	printf("panic: %s\n", list);
+spl7();
+	for(;;) {
+		led_alarm();
+		//idle();
+	}
 }
 
 /*
