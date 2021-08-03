@@ -4,7 +4,7 @@
 #include "../h/param.h"
 #include "../h/systm.h"
 #include "../h/map.h"
-
+#define register
 /*
  * Allocate 'size' units from the given
  * map. Return the base of the allocated

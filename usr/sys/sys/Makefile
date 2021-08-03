@@ -25,14 +25,14 @@ OBJS=\
   n200/gd32vf103_timer.o \
   n200/gd32vf103xb_boot.o
 
-ifneq ($(BOARD_gd32_dev),undefined)
-  OBJS += \
-    n200/gd32vf103v_lcd_eval.o \
-    n200/gd32vf103_exmc.o
-else
+#ifneq ($(BOARD_gd32_dev),undefined)
+#  OBJS += \
+#    n200/gd32vf103v_lcd_eval.o \
+#    n200/gd32vf103_exmc.o
+#else
   OBJS += \
     n200/gd32v_lcd.o
-endif
+#endif
 
 CFLAGS += -In200/
 CFLAGS += -DHXTAL_VALUE=108000000
