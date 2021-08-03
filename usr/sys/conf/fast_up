@@ -1,2 +1,7 @@
 /Applications/SEGGER/Jlink/JLinkGDBServer -device GD32VF103CBT6 &
-fswatch md0unix.bin  -0 --monitor=kqueue_monitor | xargs -n1 -0 ./upload
+# fswatch sd0unix.bin  -0 --monitor=kqueue_monitor | xargs -n1 -0  | sort -u./upload
+# fswatch sd0unix.bin  -0 --monitor=kqueue_monitor | ./upload
+while :
+  fswatch sd0unix.bin  -1 
+  ./upload
+done
