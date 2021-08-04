@@ -9,6 +9,7 @@
   #define REGBYTES   4
 #endif
 
+#include "../h/riscv-asm.h"
 #include "../sys/n200/riscv_encoding.h"
 
 #define	EFAULT	14 // from ../h/user.h
@@ -16,11 +17,14 @@
 #define VM_MAXUSER_ADDRESS	KERNBASE
 
 .data
+
+# Eventually, this would be per-processor.
+.globl ipl
 ipl: .word 0
 
 .text
 
-# spl handling is totally untested
+#if 0
 .globl spl0
 spl0:
 	lw a5, ipl
@@ -46,6 +50,79 @@ spl7:
 	ret
 splx:
  	ret
+#else
+ // Goofy calling convention of having the argument in the function
+ // name is to match PDP opcodes entrenched in UNIX kernel API. :-/
+ ENTRY(spl0)
+ 	csrci	mstatus, MSTATUS_MIE		// disable interrupts
+	la t1, ipl
+	sw zero, (t1) # ipl = a0, our new IPL.
+
+	//call riscv_do_pending_irqs
+
+	csrsi	mstatus, MSTATUS_MIE		// enable interrupts
+	// spl0() is only called rarely so the overhead of always calling
+	// softint_deliver is minimal.
+	// tail	(softint_deliver)
+	ret
+ END(spl0)
+
+ ENTRY(spl1) // Clock
+	 li t0, 1
+	 j _splraise
+ END(spl1)
+
+ ENTRY(spl5) // Char I/O
+	 li t0, 5
+	 j _splraise
+ END(spl5)
+
+ ENTRY(spl6) // Block I/O
+	 li t0, 6
+	 j _splraise
+ END(spl6)
+
+ ENTRY(spl7) // TTY
+ ret
+	csrci	mstatus, MSTATUS_MIE		// disable interrupts
+	li a0, 7
+	la t1, ipl
+	sw a0, (t1) # ipl = a0, our new IPL.
+	// Interrupts remain disabled
+	ret
+ END(spl7)
+
+ ENTRY(splx)
+	// a0 = new lower IPL
+	csrci	mstatus, MSTATUS_MIE		// disable interrupts
+	la t1, ipl
+	lw t0, (t1)
+	beq	a0, t0, 2f
+
+	// a0 = new ipl
+	sw a0, (t1)
+	beqz	t0, 2f
+
+	//call riscv_do_pending_irqs
+2:
+	csrsi	mstatus, MSTATUS_MIE		// enable interrupts
+#if LATER // We don't have softints, (yet?) so don't optimize them.
+	INT_L	t4, CI_SOFTINTS(a3)	// get softint mask
+	srl	t4, t4, a0		// see what softints are pending.
+	beqz	t4, 3f			// none, just return
+	// there are softints that need to be delivered, so instead of
+	// returning to the caller, we'll jump to softint_deliver and it
+	// will do a tailcall back to splx and then we can return (if there
+	// are no pending softints).
+	tail	_C_LABEL(softint_deliver)
+3:
+#endif
+	ret				// return (or do softints)
+ END(splx)
+#endif
+
+
+
 #if 1
 .globl inb
 .globl outb
@@ -61,6 +138,25 @@ outsw:
  	ret
 #endif
 
+// IPL plumbing borrowed from
+// https://github.com/IIJ-NetBSD/netbsd-src/blob/master/sys/arch/riscv/riscv/spl.S
+// Notably we change from System mode to Machine Mode.
+
+ENTRY(splraise)
+	mv	t0, a0			// need a0 for return value if not raising
+	_splraise:
+	la 	t1, ipl
+	csrci	mstatus, MSTATUS_MIE		// disable interrupts
+	lw a0, (t1) # a0 = ipl
+	bge	a0, t0, 2f		// already at same or higher?
+	sw a0, (t1) # ipl = a0, our new IPL.
+2:
+	csrsi	mstatus, MSTATUS_MIE		// enable interrupts
+	ret
+
+END(splraise)
+
+
 .globl copyin
 copyin:
  	ret
@@ -68,18 +164,6 @@ copyin:
 .globl copyout
 copyout:
  	ret
-
-#.globl trap0
-#trap0:
-#	ret
-
-#.globl trap
-#trap:
-#	ret
-
-#.globl _resume
-#_resume:
-#	ret
 
 .global savfp, restfp
 savfp:
