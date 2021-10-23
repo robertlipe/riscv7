@@ -18,6 +18,8 @@ QEMU = qemu-system-riscv64
 ROOT = $(PWD)/../
 
 CFLAGS=\
+   -DBOARD=$(BOARD) \
+   -DBOARD_$(BOARD) \
    -Wno-implicit-int \
    -Wno-implicit-function-declaration \
    -Wno-return-type \

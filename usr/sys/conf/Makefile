@@ -1,3 +1,4 @@
+include ../kernel.mk
 include ../../../tools/common.mk
 include ../../../tools/kernel.mk
 

@@ -1,3 +1,4 @@
+include ../kernel.mk
 include ../../../tools/common.mk
 include ../../../tools/kernel.mk
 
@@ -18,8 +19,7 @@ OBJS=\
 	sc.o \
 	serial.o \
 	sys.o \
-	tty.o 
-
+	tty.o
 
 LIB2.a:	$(OBJS)
 	$(AR) -rv -o LIB2.a $?
