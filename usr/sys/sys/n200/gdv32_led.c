@@ -9,6 +9,31 @@
 #define LED_BLUE  GPIO_OCTL_OCTL2
 #define LED_RED   GPIO_OCTL_OCTL13
 
+#if defined(BOARD_gd32_dev)
+// The Nano code should do something like this, too...
+#define LED1_PIN                         GPIO_PIN_0
+#define LED1_GPIO_PORT                   GPIOC
+#define LED1_GPIO_CLK                    RCU_GPIOC
+
+#define LED2_PIN                         GPIO_PIN_2
+#define LED2_GPIO_PORT                   GPIOC
+#define LED2_GPIO_CLK                    RCU_GPIOC
+
+#define LED3_PIN                         GPIO_PIN_0
+#define LED3_GPIO_PORT                   GPIOE
+#define LED3_GPIO_CLK                    RCU_GPIOE
+
+#define LED4_PIN                         GPIO_PIN_1
+#define LED4_GPIO_PORT                   GPIOE
+#define LED4_GPIO_CLK                    RCU_GPIOE
+
+static uint32_t GPIO_PORT[] = {LED1_GPIO_PORT, LED2_GPIO_PORT,
+                                   LED3_GPIO_PORT, LED4_GPIO_PORT};
+static uint32_t GPIO_PIN[] = {LED1_PIN, LED2_PIN, LED3_PIN, LED4_PIN};
+static rcu_periph_enum GPIO_CLK[] = {LED1_GPIO_CLK, LED2_GPIO_CLK,
+                                         LED3_GPIO_CLK, LED4_GPIO_CLK};
+#endif
+
 __attribute__( ( optimize( "O0" ) ) )
 void delay_cycles( uint32_t cyc ) {
   uint32_t d_i;
@@ -46,6 +71,29 @@ led_init()
                      ( 0x2 << GPIO_CRL_MODE2_Pos ) );
   GPIOC->control_hi   &= ~( GPIO_CRH_MODE13 | GPIO_CRH_CNF13 );
   GPIOC->control_hi   |=  ( 0x2 << GPIO_CRH_MODE13_Pos );
+#endif
+#if defined(BOARD_gd32_dev)
+#if 0
+  ((GPIO*)GPIOC)->control_hi   &= ~( GPIO_CTL1_MD0 | GPIO_CTL1_CTL2 );
+  ((GPIO*)GPIOC)->control_hi   |=  ( 0x1 << 20 );
+  ((GPIO*)GPIOE)->control_hi   &= ~( GPIO_CTL1_MD0 | GPIO_CTL1_CTL1 );
+  ((GPIO*)GPIOE)->control_hi   |=  ( 0x1 << 20 );
+#endif
+  rcu_periph_clock_enable(GPIO_CLK[0]);
+  rcu_periph_clock_enable(GPIO_CLK[1]);
+  rcu_periph_clock_enable(GPIO_CLK[2]);
+  rcu_periph_clock_enable(GPIO_CLK[3]);
+
+  gpio_init(GPIO_PORT[0], GPIO_MODE_OUT_PP, GPIO_OSPEED_50MHZ, GPIO_PIN[0]);
+  gpio_init(GPIO_PORT[1], GPIO_MODE_OUT_PP, GPIO_OSPEED_50MHZ, GPIO_PIN[1]);
+  gpio_init(GPIO_PORT[2], GPIO_MODE_OUT_PP, GPIO_OSPEED_50MHZ, GPIO_PIN[2]);
+  gpio_init(GPIO_PORT[3], GPIO_MODE_OUT_PP, GPIO_OSPEED_50MHZ, GPIO_PIN[3]);
+
+  GPIO_BC(GPIO_PORT[0]) = GPIO_PIN[0];
+  GPIO_BC(GPIO_PORT[1]) = GPIO_PIN[1];
+  GPIO_BC(GPIO_PORT[2]) = GPIO_PIN[2];
+  GPIO_BC(GPIO_PORT[3]) = GPIO_PIN[3];
+
 #endif
 
 }

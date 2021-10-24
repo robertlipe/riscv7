@@ -1,4 +1,4 @@
-
+include ../kernel.mk
 include ../../../tools/common.mk
 include ../../../tools/kernel.mk
 
@@ -21,6 +21,15 @@ sys1.o sys2.o sys3.o sys4.o sysent.o text.o trap.o utab.o  \
   n200/gd32vf103_rcu.o \
   n200/gd32vf103_timer.o \
   n200/gd32vf103xb_boot.o
+
+ifeq ($(BOARD_gd32_dev), 1)
+  OBJS += \
+    n200/gd32vf103v_lcd_eval.o \
+    n200/gd32vf103_exmc.o
+else
+  OBJS += \
+    n200/gd32v_lcd.o
+endif
 
 CFLAGS += -In200/
 CFLAGS += -DHXTAL_VALUE=108000000
