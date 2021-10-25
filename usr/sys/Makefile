@@ -2,11 +2,12 @@
 # That's probably not idea.
 all:
 	-killall qemu-system-riscv64
-	make -C sys
-	make -C dev
-	make -C conf
+	make $(MAKEFLAGS) -C sys
+	make $(MAKEFLAGS) -C dev
+	make $(MAKEFLAGS) -C conf
 	# cd conf; make unix allsystems
 
+.PHONY: clean
 clean:
 	make -C dev clean
 	make -C conf clean
