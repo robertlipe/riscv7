@@ -11,10 +11,13 @@
  *	Type 'r' means in lines in reverse order from end
  *	 (for -r, default is entire buffer )
 */
-#include	<sys/types.h>
-#include	<sys/stat.h>
-#include	<errno.h>
+
+#include <errno.h>
 #include <stdlib.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+
 #define LBIN 4097
 struct	stat	statb;
 char bin[LBIN];
