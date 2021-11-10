@@ -1,9 +1,11 @@
 /* UNIX V7 source code: see /COPYRIGHT or www.tuhs.org for details. */
 
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
 #include <sgtty.h>
+#include <unistd.h>
 /*
  *	cu telno [-t] [-s speed] [-l line] [-a acu]
  *

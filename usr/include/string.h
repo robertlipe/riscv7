@@ -2,6 +2,8 @@
 
 #include <stddef.h>
 
+char * index(const char *s, int c);
+char * rindex(const char *s, int c);
 void *   memchr (const void *, int, long unsigned int);
 int      memcmp (const void *, const void *, long unsigned int);
 void *   memcpy (void *__restrict, const void *__restrict, long unsigned int);

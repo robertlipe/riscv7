@@ -10,8 +10,7 @@
 #include "sys/stat.h"
 
 #include <stdio.h>
-
-extern char *malloc();
+#include <stdlib.h>
 
 union bwl {
 	char b;
@@ -1080,7 +1079,7 @@ char *acp;
 	if(text.size <= 0)
 		return(1);	/* regular archive */
 	mget(&text, (int *)&archdr, sizeof archdr);
-	if(strncmp(archdr.aname, goodnm, 14) != 0)
+	if(strncmp(archdr.aname, goodnm, 14U) != 0)
 		return(1);	/* regular archive */
 	else {
 		fstat(infil, &x);

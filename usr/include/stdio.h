@@ -1,4 +1,5 @@
 /* UNIX V7 source code: see /COPYRIGHT or www.tuhs.org for details. */
+#include <stddef.h>
 
 #define	BUFSIZ	512
 #define	_NFILE	20
@@ -46,3 +47,14 @@ char	*fgets();
 int     printf (const char *__restrict, ...);
 int     fprintf (FILE*, const char *__restrict, ...);
 int     sprintf (char*, const char *__restrict, ...);
+
+size_t fread(void *restrict ptr, size_t size, size_t nitems,
+         FILE *restrict stream);
+
+size_t fwrite(const void *restrict ptr, size_t size, size_t nitems,
+         FILE *restrict stream);
+
+int fscanf(FILE *restrict stream, const char *restrict format, ...);
+int scanf(const char *restrict format, ...);
+int sscanf(const char *restrict s, const char *restrict format, ...);
+

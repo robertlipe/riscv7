@@ -7,6 +7,7 @@
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #define	oput(c) if (pgskip==0) putchar(c); else;
 #define MAXY 3071

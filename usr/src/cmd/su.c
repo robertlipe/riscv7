@@ -1,8 +1,10 @@
 /* UNIX V7 source code: see /COPYRIGHT or www.tuhs.org for details. */
 
+#include <pwd.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <pwd.h>
+#include <string.h>
+#include <unistd.h>
 
 struct	passwd *pwd,*getpwnam();
 char	*crypt();
