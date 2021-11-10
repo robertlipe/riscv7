@@ -15,6 +15,13 @@ char *fillst[] = {
 	0,
 };
 
+void dosync()
+{
+	sync();
+	signal(SIGALRM, dosync);
+	alarm(30);
+}
+
 main()
 {
 	char **f;
@@ -29,11 +36,4 @@ main()
 	dosync();
 	for(;;)
 		pause();
-}
-
-void dosync()
-{
-	sync();
-	signal(SIGALRM, dosync);
-	alarm(30);
 }

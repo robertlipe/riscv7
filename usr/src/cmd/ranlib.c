@@ -1,10 +1,12 @@
 /* UNIX V7 source code: see /COPYRIGHT or www.tuhs.org for details. */
 /* Changes: Copyright (c) 1999 Robert Nordier. All rights reserved. */
 
-#include	<ar.h>
-#include	<a.out.h>
-#include	<stdio.h>
+#include <a.out.h>
+#include <ar.h>
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
 #define	MAGIC	exp.a_magic
 #define	BADMAG	MAGIC!=A_MAGIC1 && MAGIC!=A_MAGIC2  \
 		&& MAGIC!=A_MAGIC3 && MAGIC!=A_MAGIC4
