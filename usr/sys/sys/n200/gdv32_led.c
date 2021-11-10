@@ -41,14 +41,7 @@ void delay_cycles( uint32_t cyc ) {
   }
 }
 
-Xled_init() {
-    rcu_periph_clock_enable(RCU_GPIOA);
-    rcu_periph_clock_enable(RCU_GPIOC);
-    gpio_init(GPIOC, GPIO_MODE_OUT_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_13);
-    gpio_init(GPIOA, GPIO_MODE_OUT_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_1|GPIO_PIN_2);
-}
-
-// This is probably not fully correct. The LEDs seems to work only the 
+// This is probably not fully correct. The LEDs seems to work only the
 // second time after the device is hard booted.  Might be bad timer.
 // Maybe this code isn't even to blame. {/shrug} RJL 2020-10-12
 led_init()

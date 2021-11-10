@@ -62,10 +62,7 @@ typedef __UINT64_TYPE__   uint64_t;
 
  /* define value of high speed crystal oscillator (HXTAL) in Hz */
  #if !defined  HXTAL_VALUE  
-   #ifdef GD32VF103R_START
-   #define HXTAL_VALUE    ((uint32_t)25000000) /*!< value of the external oscillator in Hz */
-   #define HXTAL_VALUE_8M  HXTAL_VALUE
-#elif defined(GD32VF103V_EVAL) || defined(GD32VF103C_START) || defined(GD32VF103T_START)
+   #ifdef GD32VF103R_START #define HXTAL_VALUE    ((uint32_t)25000000) /*!< value of the external oscillator in Hz */ #define HXTAL_VALUE_8M  HXTAL_VALUE #elif defined(GD32VF103V_EVAL) || defined(GD32VF103C_START) || defined(GD32VF103T_START)
    #define HXTAL_VALUE    ((uint32_t)8000000) /*!< value of the external oscillator in Hz */
    #define HXTAL_VALUE_25M  HXTAL_VALUE
    #else
