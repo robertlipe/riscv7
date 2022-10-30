@@ -13,17 +13,15 @@ char	*getenv();
 extern	errno;
 static char * execat(char* s1, char* s2, char* si);
 
-execlp(name, argv)
-char *name, *argv;
+execlp(const char *name, const char *argv)
 {
 	return(execvp(name, &argv));
 }
 
-execvp(name, argv)
-char *name, **argv;
+execvp(const char *name, char **argv)
 {
 	char *pathstr;
-	register char *cp;
+	const char *cp;
 	char fname[128];
 	char *newargs[256];
 	int i;

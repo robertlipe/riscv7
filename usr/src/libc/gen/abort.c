@@ -4,7 +4,10 @@
 #include <signal.h>
 #include <stdlib.h>
 
-abort()
+void abord() __attribute__ ((noreturn));
+
+void abort()
 {
 	kill(getpid(), SIGIOT);
+	_exit(1);
 }

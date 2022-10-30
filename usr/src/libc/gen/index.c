@@ -5,11 +5,10 @@
  * NULL if not found
  */
 
-#define	NULL	0
+#include <string.h>
 
-char *
-index(sp, c)
-register char *sp, c;
+const char *
+index(const char *sp, int c)
 {
 	do {
 		if (*sp == c)

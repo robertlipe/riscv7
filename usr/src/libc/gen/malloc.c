@@ -1,5 +1,7 @@
 /* UNIX V7 source code: see /COPYRIGHT or www.tuhs.org for details. */
 
+#include <stdlib.h>
+
 #ifdef debug
 #define ASSERT(p) if(!(p))botch("p");else
 botch(s)
@@ -15,9 +17,9 @@ char *s;
 /*	C storage allocator
  *	circular first-fit strategy
  *	works with noncontiguous, but monotonically linked, arena
- *	each block is preceded by a ptr to the (pointer of) 
+ *	each block is preceded by a ptr to the (pointer of)
  *	the next following block
- *	blocks are exact number of words long 
+ *	blocks are exact number of words long
  *	aligned to the data type requirements of ALIGN
  *	pointers to blocks must have BUSY bit 0
  *	bit in ptr is 1 for busy, 0 for idle
@@ -38,10 +40,10 @@ char *s;
 #define BLOCK 1024
 #define FRAG 32
 #define BUSY 1
-#define NULL 0
-#define testbusy(p) ((INT)(p)&BUSY)
-#define setbusy(p) (union store *)((INT)(p)|BUSY)
-#define clearbusy(p) (union store *)((INT)(p)&~BUSY)
+
+#define testbusy(p) ((long)(p)&BUSY)
+#define setbusy(p) (union store *)((long)(p)|BUSY)
+#define clearbusy(p) (union store *)((long)(p)&~BUSY)
 
 union store {
 	      union store *ptr;
@@ -55,9 +57,8 @@ static	union store *allocp = &alloca;	/*search ptr*/
 static	union store *allocx;	/*for benefit of realloc*/
 extern	char *sbrk();
 
-char *
-malloc(nbytes)
-unsigned nbytes;
+void *
+malloc(size_t nbytes)
 {
 	register union store *p, *q;
 	register nw;
@@ -92,7 +93,7 @@ unsigned nbytes;
 			return(NULL);
 		for(;;) {
 			q = (union store *)sbrk(temp*WORD);
-			if((INT)q != -1) 
+			if((long)q != -1)
 				break;
 			temp -= FRAG/WORD;
 			if(temp <= nw)
@@ -113,8 +114,7 @@ found:
 
 /*	freeing strategy tuned for LIFO allocation
 */
-free(ap)
-char *ap;
+void free(void *ap)
 {
 	register union store *p = (union store *)ap;
 
@@ -169,10 +169,8 @@ unsigned nbytes;
  *	returns new location, or 0 on failure
 */
 
-char *
-realloc(pp, nbytes)
-char *pp;
-unsigned nbytes;
+void *
+realloc(void *pp, size_t nbytes)
 {
 	register union store *q;
 	register union store *p = (union store *)pp;
