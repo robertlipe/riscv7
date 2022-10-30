@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/param.h>
 #include <sys/inode.h>
 #include <sys/ino.h>
@@ -86,7 +87,7 @@ char *argv[];
 	printem(prebuf, (ino_t) 2);
 	exit(0);
 }
-	i = 0;
+	int i = 0;
 /*
  * Read the tape, bulding up a directory structure for extraction
  * by name
@@ -218,7 +219,7 @@ eloop:
 readtape(b)
 char *b;
 {
-	register i;
+	int i;
 	struct spcl tmpbuf;
 
 	if (bct >= NTREC) {

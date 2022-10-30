@@ -2,14 +2,14 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <utmp.h>
+
 #define	USERS	50
 
 char	mesg[3000];
 int	msize;
 struct	utmp utmp[USERS];
-char	*strcpy();
-char	*strcat();
 
 main(argc, argv)
 char *argv[];

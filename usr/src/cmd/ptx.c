@@ -22,6 +22,8 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <signal.h>
+#include <unistd.h>
+
 #define DEFLTX "/usr/lib/eign"
 #define TILDE 0177
 #define SORT "/bin/sort"

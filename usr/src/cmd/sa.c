@@ -54,7 +54,7 @@ char **argv;
 {
 	FILE *ff;
 	int i, j, k;
-	extern tcmp(), ncmp(), bcmp();
+	extern tcmp(), ncmp(), my_bcmp();
 	extern float sum();
 	float ft;
 
@@ -202,7 +202,7 @@ char **argv;
 		printmoney();
 		exit(0);
 	}
-	qsort(tab, k, sizeof(tab[0]), nflg? ncmp: (bflg?bcmp:tcmp));
+	qsort(tab, k, sizeof(tab[0]), nflg? ncmp: (bflg?my_bcmp:tcmp));
 	column(ncom, treal, tcpu, tsys);
 	printf("\n");
 	for (i=0; i<k; i++)
@@ -345,7 +345,7 @@ struct tab *p1, *p2;
 	return(p2->count - p1->count);
 }
 
-bcmp(p1, p2)
+my_bcmp(p1, p2)
 struct tab *p1, *p2;
 {
 	float f1, f2;

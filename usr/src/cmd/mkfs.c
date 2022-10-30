@@ -13,6 +13,8 @@
 #define	itoo(x)	(int)((x+15)&07)
 #ifndef STANDALONE
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 #include <a.out.h>
 #endif
 #include <sys/param.h>

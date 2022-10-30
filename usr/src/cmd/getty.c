@@ -8,6 +8,7 @@
 #include <sgtty.h>
 #include <signal.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #define ERASE	'#'
 #define KILL	'@'

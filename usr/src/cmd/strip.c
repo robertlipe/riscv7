@@ -3,6 +3,8 @@
 
 #include <a.out.h>
 #include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 char	*tname;
 char	*mktemp();

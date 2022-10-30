@@ -1,4 +1,4 @@
-CFLAGS += -nostdlib  -nostdinc -I../../include
+CFLAGS += -nostdinc -I$(realpath $(ROOT)/../../usr/include)
 LIBC := -nostdlib -L../libc -lc
 LD = $(PREFIX)ld
 STARTUP=../libc/csu/crt0.o

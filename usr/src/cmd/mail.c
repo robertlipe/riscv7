@@ -1,13 +1,14 @@
 /* UNIX V7 source code: see /COPYRIGHT or www.tuhs.org for details. */
 
+#include <pwd.h>
+#include <setjmp.h>
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <pwd.h>
-#include <utmp.h>
-#include <signal.h>
-#include <sys/types.h>
+#include <string.h>
 #include <sys/stat.h>
-#include <setjmp.h>
+#include <sys/types.h>
+#include <utmp.h>
 #include <whoami.h>
 
 /*copylet flags */

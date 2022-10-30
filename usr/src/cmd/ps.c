@@ -7,6 +7,7 @@
  */
 
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 #include <a.out.h>
 #include <core.h>
@@ -20,7 +21,7 @@ struct nlist nl[] = {
 	{ "_proc" },
 	{ "_swapdev" },
 	{ "_swplo" },
-	{ NULL },
+	{ 0 },
 };
 
 struct	proc mproc;
@@ -33,10 +34,8 @@ int	vflg;
 int	kflg;
 int	xflg;
 char	*tptr;
-long	lseek();
 char	*gettty();
 char	*getptr();
-char	*strncmp();
 int	aflg;
 int	mem;
 int	swmem;
@@ -191,7 +190,7 @@ getdev()
 }
 
 long
-round(a, b)
+my_round(a, b)
 	long		a, b;
 {
 	long		w = ((a+b-1)/b)*b;
@@ -235,7 +234,7 @@ prcom(puid)
 	datsiz = ctob(u.u_dsize);
 	stksiz = ctob(u.u_ssize);
 	septxt = u.u_sep;
-	datmap.b1 = (septxt ? 0 : round(txtsiz,TXTRNDSIZ));
+	datmap.b1 = (septxt ? 0 : my_round(txtsiz,TXTRNDSIZ));
 	datmap.e1 = datmap.b1+datsiz;
 	datmap.f1 = ctob(USIZE)+addr;
 	datmap.b2 = stackbas(stksiz);

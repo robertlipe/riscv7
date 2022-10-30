@@ -30,7 +30,7 @@ struct predlist {
 	struct nodelist *pred;
 };
 
-struct nodelist *index();
+struct nodelist *my_index();
 struct nodelist *findloop();
 struct nodelist *mark();
 char *empty = "";
@@ -57,8 +57,8 @@ char **argv;
 			break;
 		if(x!=2)
 			error("odd data",empty);
-		i = index(precedes);
-		j = index(follows);
+		i = my_index(precedes);
+		j = my_index(follows);
 		if(i==j||present(i,j))
 			continue;
 		t = (struct predlist *)malloc(sizeof(struct predlist));
@@ -111,7 +111,7 @@ struct nodelist *i;
 /*	turn a string into a node pointer
 */
 struct nodelist *
-index(s)
+my_index(s)
 register char *s;
 {
 	register struct nodelist *i;

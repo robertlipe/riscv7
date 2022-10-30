@@ -4,13 +4,15 @@
  * mv file1 file2
  */
 
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdlib.h>
 #include <string.h>
-#include <sys/types.h>
-#include <sys/stat.h>
+#include <unistd.h>
 #include <sys/dir.h>
-#include <signal.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 #define	DOT	"."
 #define	DOTDOT	".."
