@@ -8,8 +8,7 @@ CFLAGS += \
    -nostdlib \
    -mno-relax \
    -fcommon \
-   -DNCPU=2
-
+   -DNCPU=1
 
 JUNK= \
    -mcmodel=medany \
@@ -23,4 +22,4 @@ CFLAGS += \
 
 
 # LDFLAGS += -Wl,--gc-sections -nostartfiles -nodefaultlibs -nodefaultlibs -z muldefs -march=rv32imac -mabi=ilp32
-LDFLAGS += -Wl,--gc-sections -nostartfiles -nodefaultlibs -march=rv32imac -mabi=ilp32
+LDFLAGS += -Wl,--gc-sections -nostartfiles -nodefaultlibs $(ABI)

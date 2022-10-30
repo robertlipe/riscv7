@@ -14,6 +14,8 @@
 #include "../h/reg.h"
 #include "../h/buf.h"
 #include "../sys/memlayout.h"
+
+#if CPU_TYPE_gd32v == 1
 #include "../sys/n200/riscv_encoding.h"
 #include "../sys/n200/gd32vf103.h"
 #include "../sys/n200/gd32v_lcd.h"
@@ -22,6 +24,9 @@
 #include "../sys/n200/ff.h"
 
 uint32_t SystemCoreClock = 108000000;
+
+#endif
+
 
 extern int phymem;
 extern long _kend;
@@ -74,6 +79,10 @@ asm(R"(
 // Global 'tick' value.
 volatile uint32_t systick = 0;
 // [...]
+
+
+#if BOARD_nano
+
 // System timer interrupt.
 __attribute__( ( interrupt ) )
 void eclic_mtip_handler( void ) {
@@ -126,6 +135,7 @@ configure_eclic()
   // Re-enable interrupts globally.
   set_csr( mstatus, MSTATUS_MIE );
 }
+#endif  // BOARD_NANO
 
 
 /*
@@ -146,14 +156,11 @@ startup (void)
 extern char* msgbufp;
 extern char msgbuf[];
 	KASSERT(msgbuf == msgbufp, "msgbufp isn't &msgbufp");
+#if BOARD_nano
   led_init();
-#if 1
-//printf("Console");
-// led_alarm();
   LCD_Init();
 LCD_Clear(BLUE);
-//for(volatile int i = 0; i < 0x100; i++) asm("nop");
-//printf("Console done");
+
 #endif
 
 //        outb(0x3f2, 0xc); /* XXX turn floppy drive motor off */
@@ -227,8 +234,12 @@ j = (long) &_kend + 1280;
   write_csr( CSR_MTVEC, default_interrupt_handler);
 #endif
 
+#if CPU_TYPE_gd32v == 1
 printf("Configuring eclic\n");
   configure_eclic();
+#else
+printf("enable interrupts somehow");
+#endif
 
 //Lcd_Init();
 //LCD_Clear(BLUE);
@@ -290,105 +301,12 @@ sysphys (void)
 	u.u_error = EINVAL;
 }
 
-#if TOOMUCH
 /*
  * Start the clock.
  */
+#if BOARD_nano
 int
-clkstart (void)
-{
-	#if 0
-	unsigned c = (0x1234dd + HZ / 2) / HZ;
-
-	readrtc();
-	/* 8253 pit counter 0 mode 3 */
-	cli();
-	outb(0x43, 0x36);
-	outb(0x40, c);
-	outb(0x40, c >> 8);
-	sti();
-	spl0();
-	#else
-	// set desired IRQ priorities non-zero (otherwise disabled).
-	cli();
-	int id = get_mhartid();
-set_mie(get_mie() | (1<<7));
-
-	printf("CPU: ->%x<-\n", id);
-printf("CPU nonsense: ->%x<-\n", 0x12345678);
-//printf("CPU long long nonsense: ->%x<-\n", 0x123456789abcdefLL);
-#if 1
-printf("CPU time: ->%x<-\n", *(volatile long *)CLINT_MTIME);
-printf("CPU time: ->%x<-\n", *(volatile long *)CLINT_MTIME);
-#else
-printf("CPU time: ->%x<-\n", *(volatile char *)0x000bff8);
-printf("CPU time: ->%x<-\n", *(volatile short *)0x000bff8);
-printf("CPU time: ->%x<-\n", *(volatile int *)0x020bff8);
-printf("CPU time: ->%x<-\n", *(volatile long long *)0x020bff8);
-#endif
-
-#if BOOGER
-	int interval = 1000; // cycles; about 1/10th second in qemu.
-if (1) {
-#if __riscv_xlen == 32
-  *(uint32*)CLINT_MTIMECMP(id) = *(uint32*)CLINT_MTIME + interval;
-#elif __riscv_xlen == 64
-  *(uint64*)CLINT_MTIMECMP(id) = *(uint64*)CLINT_MTIME + interval;
-#else
-#error bad riscv_xlen
-#endif
-} else {
-  printf("Skipping initial timer arm\n");
-}
-#else
-// FIXME: don't hardcode a clock here.
-  *(uint32*)CLINT_MTIMECMP(id) = 108000000 / 4;
-
-#endif
-
-  int *scratch = &mscratch0[32 * id];
-  scratch[4] = CLINT_MTIMECMP(id);
-//  scratch[5] = interval;
-  set_mscratch((unsigned long)scratch);
-
-//  *(uint32*)(PLIC + UART0_IRQ*4) = 1;
-//  *(uint32*)(PLIC + VIRTIO0_IRQ*4) = 1;
-  // set the machine-mode trap handler.
-  //maset_mtvec((uint64)timervec);
-  // Second attempts....
-//  extern void machinetrap();
-//  set_mtvec((unsigned long)&machinetrap);
-
-  // enable machine-mode interrupts.
-  set_mstatus(get_mstatus() | MSTATUS_MIE);
-
-  // enable machine-mode timer interrupts.
-  set_mie(get_mie() | MIE_MTIE);
- sti();
- spl0();
-  	printf("clkstart done\n", id);
-long one = lbolt;
-long two = lbolt;
-printf("%d %d\n", one, two);
-	KASSERT(one == two, "timer not running");
-//  	printf("1 EPC: %x\n", get_sepc());
-// volatile int x = 2/ 0 ;
-//  	printf("2 EPC: %x\n", get_sepc());
-if (1) {
-//  	intr_enable();
-} else {
- 	printf("intr_enable skipped in clkstart");
-}
-// for(;;);
-	#endif
-}
-#endif
-
-/*
- * Start the clock.
- */
-int
-clkstart (void)
+platform_clkstart (void)
 {
 //  KASSERT(lbolt == 0, "timer running too soon");
 
@@ -402,6 +320,7 @@ clkstart (void)
 //  set_mstatus(/*get_mstatus(), */ MSTATUS_MIE);
   set_csr( mstatus, MSTATUS_MIE );
 }
+#endif // BOARD_NANO
 
 /*
  * Let a process handle a signal by simulating a call
@@ -467,3 +386,10 @@ inrtc (int addr)
 
 // new RISC-V code starts here
 
+reset_handler() { main() ; }
+
+void platform_putc(int c) {
+}
+
+void platform_clkstart (void) {
+}

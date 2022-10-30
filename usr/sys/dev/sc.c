@@ -582,6 +582,7 @@ short *p;
  * Kernel printf output ends up here.  It is buffered for
  * later retrieval by dmesg, and gets printed on the console
  * if we're not in cursor addressing mode.
+ * FIXME: This whole thing needs rethought in the name of portability.
  */
 putchar(c)
 {
@@ -596,11 +597,19 @@ putchar(c)
 #else
 // This is a gross hack 
         *(volatile int *)0x10000000 = c;
+
+#if BOARD_nano
 extern void LCD_Putc(char c, short color);
 {
 static int color = 0x07E0; // GREEN
 LCD_Putc(c, color);
 }
+#else
+
+extern void platform_putc(int c);
+	platform_putc(c);
+#endif
+
 
 
 #if LATER
@@ -610,3 +619,4 @@ SEGGER_RTT_PutChar(0, c);
 #endif // LATER
 #endif
 }
+

@@ -61,7 +61,7 @@ extern long _sbss, _sdata, _edata, _sidata, __bss_start, _ebss;
 	 * set up 'known' i-nodes
 	 */
 
-	clkstart();
+	platform_clkstart();
 	cinit();
 	binit();
 #if 1
