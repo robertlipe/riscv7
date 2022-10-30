@@ -57,7 +57,7 @@ struct	user
 	int	u_utab[4];		/* XXX */
 	struct file *u_ofile[NOFILE];	/* pointers to file structures of open files */
 	char	u_pofile[NOFILE];	/* per-process flags of open files */
-	int	u_arg[5];		/* arguments to current system call */
+	long	u_arg[5];		/* arguments to current system call */
 	unsigned u_tsize;		/* text size (clicks) */
 	unsigned u_dsize;		/* data size (clicks) */
 	unsigned u_ssize;		/* stack size (clicks) */

@@ -12,10 +12,10 @@ include ../../../tools/kernel.mk
 unix:	../sys/LIB1.a ../dev/LIB2.a machine.o c.o shims.o Makefile mkconf kernel.ld
 	#cd ../sys; cc -c -O *.c; ./mklib; # rm *.o
 	# cd ../sys ; make $(MAKEFLAGS)
-	$(MAKE)  $(MAKEFLAGS) -C ../sys 
+	$(MAKE)  $(MAKEFLAGS) -C ../sys
 	#cd ../dev; cc -c -O *.c; ./mklib; # rm *.o
 	# cd ../dev ; make $(MAKEFLAGS)
-	$(MAKE)  $(MAKEFLAGS) -C ../dev 
+	$(MAKE)  $(MAKEFLAGS) -C ../dev
 	# $(LD) -z max-page-size=4096 kernel.ld -o unix
 	$(LD) $(LDFLAGS) -T kernel.ld -o unix \
 	machine.o shims.o c.o \
@@ -59,6 +59,7 @@ clean:
 	rm -f hd0unix hd1unix md0unix
 	rm -f unix mch.o c.o c.c mkconf
 	rm -f ../sys/LIB1 ../sys/*.o ../dev/LIB2 ../dev/*.o *.o
+	rm -f md0unix.dis md0unix.sym md0unix.bin
 
 rungdb: unix
 	cp md0unix /tmp/unix

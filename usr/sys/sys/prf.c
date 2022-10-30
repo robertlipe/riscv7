@@ -155,7 +155,9 @@ panic (char *fmt, ...)
 	printf("panic: %s\n", list);
 	spl7();
 	for(;;) {
+#if BOARD_nano
 		led_alarm();
+#endif
 		// idle();
 	}
 }

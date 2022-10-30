@@ -18,7 +18,7 @@ int	cbad;
 /*
  * Character list get/put
  */
-int 
+int
 getc (register struct clist *p)
 {
 	register struct cblock *bp;
@@ -54,7 +54,7 @@ getc (register struct clist *p)
  * copy clist to buffer.
  * return number of bytes moved.
  */
-int 
+int
 q_to_b (register struct clist *q, register char *cp, int cc)
 {
 	register struct cblock *bp;
@@ -100,7 +100,7 @@ q_to_b (register struct clist *q, register char *cp, int cc)
  * in clist starting at q->c_cf.
  * Stop counting if flag&character is non-null.
  */
-int 
+int
 ndqb (register struct clist *q, int flag)
 {
 register cc;
@@ -141,7 +141,7 @@ out:
  * Update clist to show that cc characters
  * were removed.  It is assumed that cc < CBSIZE.
  */
-int 
+int
 ndflush (register struct clist *q, register cc)
 {
 register s;
@@ -188,7 +188,7 @@ register s;
 out:
 	splx(s);
 }
-int 
+int
 putc (int c, register struct clist *p)
 {
 	register struct cblock *bp;
@@ -228,7 +228,7 @@ putc (int c, register struct clist *p)
  * copy buffer to clist.
  * return number of bytes not transfered.
  */
-int 
+int
 b_to_q (register char *cp, register int cc, struct clist *q)
 {
 	register char *cq;
@@ -242,7 +242,7 @@ b_to_q (register char *cp, register int cc, struct clist *q)
 
 	s = spl6();
 	if ((cq = q->c_cl) == NULL || q->c_cc < 0) {
-		if ((bp = cfreelist) == NULL) 
+		if ((bp = cfreelist) == NULL)
 			goto out;
 		cfreelist = bp->c_next;
 		bp->c_next = NULL;
@@ -252,7 +252,7 @@ b_to_q (register char *cp, register int cc, struct clist *q)
 	while (cc) {
 		if (((int)cq & CROUND) == 0) {
 			bp = (struct cblock *) cq - 1;
-			if ((bp->c_next = cfreelist) == NULL) 
+			if ((bp->c_next = cfreelist) == NULL)
 				goto out;
 			bp = bp->c_next;
 			cfreelist = bp->c_next;
@@ -273,7 +273,7 @@ out:
  * Initialize clist by freeing all character blocks, then count
  * number of character devices. (Once-only routine)
  */
-int 
+int
 cinit (void)
 {
 	register int ccp;
@@ -297,7 +297,7 @@ cinit (void)
  * integer (2-byte) get/put
  * using clists
  */
-int 
+int
 getw (register struct clist *p)
 {
 	register int s;
@@ -308,7 +308,7 @@ getw (register struct clist *p)
 	return(s | (getc(p)<<8));
 }
 
-int 
+int
 putw (int c, register struct clist *p)
 {
 	register s;
