@@ -240,7 +240,7 @@ char **argv;
 
 	ep = end + MEM;
 	lspace = (int *)sbrk(0);
-	while((int)brk(ep) == -1)
+	while((long)brk(ep) == -1)
 		ep -= 512;
 	brk(ep -= 512);	/* for recursion */
 	a = ep - (char*)lspace;

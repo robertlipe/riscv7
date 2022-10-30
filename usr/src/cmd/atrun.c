@@ -12,6 +12,7 @@
 #include <sys/types.h>
 #include <time.h>
 #include <unistd.h>
+#include <stdio.h>
 
 # define DIR "/usr/spool/at"
 # define PDIR	"past"
