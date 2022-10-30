@@ -29,4 +29,4 @@ LIB2.a:	$(OBJS)
 -include *.d
 
 clean:
-	rm -f LIB1.a $(OBJS)
+	rm -f LIB2.a $(OBJS) *.d
