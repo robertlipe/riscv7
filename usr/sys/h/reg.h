@@ -3,7 +3,7 @@
 
 #pragma once
 
-#if 1
+#if 0
 /*
  * Location of the users' stored
  * registers relative to R0 (EAX for the x86).
@@ -42,4 +42,30 @@ struct trap {
     int ss;
 };
 #else
+#define EIP 1
+#define	EFL	(7)
+#define	ESP	(8)
+
+#define	TBIT	0x100		/* EFLAGS trap flag */
+
+// Loosely from freebsd's reg.h
+struct trap {
+// OLD intel names
+	long dev;
+	long pl;
+	long eip;
+	long cs;
+	long efl;
+	long esp;
+// INCOMING: RISC-V names
+	long	ra;		/* return address */
+	long	sp;		/* stack pointer */
+	long	gp;		/* global pointer */
+	long	tp;		/* thread pointer */
+	long	t[7];		/* temporaries */
+	long	s[12];		/* saved registers */
+	long	a[8];		/* function arguments */
+	long	sepc;		/* exception program counter */
+	long	sstatus;	/* status register */
+};
 #endif

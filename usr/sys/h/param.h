@@ -160,7 +160,7 @@ typedef char *		caddr_t;
 typedef	unsigned short	ino_t;
 ////typedef	long		time_t;
 // typedef	_TIME_T_ time_t;
-#define  _TIME_T_DECLARED 1
+// #define  _TIME_T_DECLARED 1
 typedef unsigned long long	 time_t;    /* a time */
 typedef	long		label_t[32];	/* RISC-V has 32 registers */
 //typedef struct gpregs		label_t;
