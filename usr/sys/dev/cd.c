@@ -83,7 +83,7 @@ static int drv = -1;
 static int trq;
 static int tticks;
 
-cdtimer();
+static cdtimer();
 static delay();
 
 cdstrategy(bp)
